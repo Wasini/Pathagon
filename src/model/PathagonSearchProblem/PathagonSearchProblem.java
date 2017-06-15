@@ -87,7 +87,10 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     }
 
     public boolean validMove(PathagonState st,PathagonToken mv)  {
-       if (st.getTurn() != mv.player)
+       int playerMoving = mv.player;
+       if (st.getTurn() != playerMoving)
+           return false;
+       if (st.playerTokensLeft(playerMoving)<=0)
            return false;
        if (!st.getBoard().freePosition(mv.row,mv.col))
            return false;

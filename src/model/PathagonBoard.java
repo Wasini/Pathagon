@@ -18,7 +18,7 @@ public class PathagonBoard {
 
     public final int ROWS = 7;
     public final int COLS = 7;
-    public final int emptyCell = 0;
+    public final int EMPTY_CELL = 0;
 
     private int totalPieces;
 
@@ -77,7 +77,7 @@ public class PathagonBoard {
     }
 
     public boolean freePosition(int row,int col) {
-        return this.board[row][col] == emptyCell;
+        return this.board[row][col] == EMPTY_CELL;
     }
 
 }
