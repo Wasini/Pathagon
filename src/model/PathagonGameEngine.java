@@ -1,6 +1,7 @@
 package model;
 
-import java.util.List;
+import model.PathagonSearchProblem.PathagonSearchProblem;
+import model.PathagonSearchProblem.PathagonState;
 
 /**
  * Created by grazi on 13/06/17.
@@ -15,10 +16,6 @@ public class PathagonGameEngine {
     private String player1;
     private String player2;
 
-    private List<PathagonToken> player1Moves;
-    private List<PathagonToken> player2Moves;
-
-
     private PathagonState currState; //Estado del juego
     private PathagonSearchProblem<PathagonState> problem; //Problema de busqueda para el juego Pathagon
 
@@ -26,10 +23,9 @@ public class PathagonGameEngine {
     public PathagonGameEngine(String player1,String player2){
 
         this.currState = new PathagonState();
+        this.problem = new PathagonSearchProblem<>(currState);
         this.player1 = player1;
         this.player2 = player2;
-        updateMoves();
-
     }
 
 
@@ -51,15 +47,15 @@ public class PathagonGameEngine {
     }
 
     public int getTurn() {
-        return this.currState.turn;
+        return this.currState.getTurn();
     }
 
     public int nextTurn() {
-        return this.currState.turn *-1;
+        return this.currState.getTurn() *-1;
     }
 
     public void setTurn(int turn) {
-        this.currState.turn = turn;
+        this.currState.setTurn(turn);
     }
 
 
@@ -67,21 +63,14 @@ public class PathagonGameEngine {
     //POST: se modifica el estado del juego al realizar el movimiento
     //TODO Cambiar el estado con el movimiento
 
-    public void mkMove(int row,int col) throws IllegalArgumentException {
+    public void mkMove(int row,int col) throws InvalidMoveException {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
-        if (validMove(mv)) {
-
-        } else {
-            throw new IllegalArgumentException("Movimiento invalid " + mv.toString());
-        }
-
+        if (problem.validMove(this.currState,mv)) {
+                problem.applyMove(this.currState,mv);
+        } else
+            throw new InvalidMoveException("Movimiento no valido "+mv.toString());
     }
 
-    //Retorna true si el movimiento @mv es aplicable al estado corriente del juego
-    //TODO
-    private boolean validMove(PathagonToken mv) {
-        return false;
-    }
 
 
 
@@ -92,21 +81,8 @@ public class PathagonGameEngine {
 
 
 
-
-
-    //Retorna una lista con todos los posibles movimientos del jugador @player para el estado @st
-    //TODO
-    private List<PathagonToken> getAvaibleMoves(int player, PathagonState st){
-        return null;
-    }
-
-    //Actualiza los movimientos de acuerdo al estado actual del juego
-    private void updateMoves() {
-        this.player1Moves = getAvaibleMoves(1,this.currState);
-        this.player2Moves = getAvaibleMoves(-1,this.currState);
-    }
-
-
-
-
 }
+
+
+
+

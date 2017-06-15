@@ -6,7 +6,7 @@
  * @author Gaston Scilingo
  * @version 0.1
  */
-package model;
+package model.PathagonSearchProblem;
 
 import framework.AdversarySearchEngine;
 import framework.AdversarySearchProblem;

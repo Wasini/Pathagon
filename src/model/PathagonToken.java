@@ -42,5 +42,16 @@ public class PathagonToken {
                 ", player=" + player +
                 '}';
     }
+
+    //
+    public boolean overlaps(PathagonToken other) {
+        if (other == null) {
+            return false;
+        } else {
+            return (this.row == other.row && this.col == other.col);
+        }
+    }
+
+
     
 }
