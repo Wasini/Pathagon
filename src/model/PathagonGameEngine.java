@@ -11,24 +11,16 @@ Clase que representa un juego de Pathagon donde el jugador 2 es una IA
 TODO:
  */
 public class PathagonGameEngine {
-    //Turno del juego: turn>0 => player1
-    private int turn;
 
     private String player1;
     private String player2;
 
-    private List<PathagonMove> player1Moves;
-    private List<PathagonMove> player2Moves;
+    private List<PathagonToken> player1Moves;
+    private List<PathagonToken> player2Moves;
 
 
-    //Estado del juego
-    private PathagonState currState;
-
-    //Fichas disponibles para jugador 1(avaibleTokens[0]
-    private int[] avaibleTokens;
-
-    //Problema de busqueda para el juego Pathagon
-    private PathagonSearchProblem<PathagonState> problem;
+    private PathagonState currState; //Estado del juego
+    private PathagonSearchProblem<PathagonState> problem; //Problema de busqueda para el juego Pathagon
 
     //Constructor de la clase
     public PathagonGameEngine(String player1,String player2){
@@ -37,7 +29,6 @@ public class PathagonGameEngine {
         this.player1 = player1;
         this.player2 = player2;
         updateMoves();
-
 
     }
 
@@ -60,20 +51,26 @@ public class PathagonGameEngine {
     }
 
     public int getTurn() {
-        return turn;
+        return this.currState.turn;
     }
 
     public int nextTurn() {
-        return turn * -1;
+        return this.currState.turn *-1;
     }
+
+    public void setTurn(int turn) {
+        this.currState.turn = turn;
+    }
+
 
     //PRE: El movimiento mv es valido en el estado actual del juego para el jugador del turno corriente
     //POST: se modifica el estado del juego al realizar el movimiento
-    //TODO
+    //TODO Cambiar el estado con el movimiento
+
     public void mkMove(int row,int col) throws IllegalArgumentException {
-        PathagonMove mv = new PathagonMove(this.turn,row,col);
+        PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (validMove(mv)) {
-            mv.apply(this.currState);
+
         } else {
             throw new IllegalArgumentException("Movimiento invalid " + mv.toString());
         }
@@ -82,16 +79,16 @@ public class PathagonGameEngine {
 
     //Retorna true si el movimiento @mv es aplicable al estado corriente del juego
     //TODO
-    private boolean validMove(PathagonMove mv) {
+    private boolean validMove(PathagonToken mv) {
         return false;
     }
 
-    ;
+
 
     //Retorna true si el juego esta en un estado final
     public boolean gameEnd() {
         return this.problem.end(currState);
-    };
+    }
 
 
 
@@ -99,7 +96,7 @@ public class PathagonGameEngine {
 
     //Retorna una lista con todos los posibles movimientos del jugador @player para el estado @st
     //TODO
-    private List<PathagonMove> getAvaibleMoves(int player,PathagonState st){
+    private List<PathagonToken> getAvaibleMoves(int player, PathagonState st){
         return null;
     }
 
