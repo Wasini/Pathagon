@@ -1,18 +1,14 @@
 package model.test;
 
-import model.InvalidMoveException;
 import model.PathagonBoard;
 import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,10 +26,10 @@ class PathagonSearchProblemTest {
         currState = p.initialState();
         PathagonBoard board = currState.getBoard();
         currState.addMove(new PathagonToken(-1,2,3));
-        board.putPiece(-1,2,3);
+        board.addToken(-1,2,3);
         PathagonToken lm = new PathagonToken(1,3,3);
         currState.addMove(lm);
-        board.putPiece(1,3,3);
+        board.addToken(1,3,3);
         currState.setTurn(-1);
         currState.setLastMove(lm);
     }
@@ -53,6 +49,9 @@ class PathagonSearchProblemTest {
 
     @Test
     void getAvaibleMoves() {
+        List<PathagonToken> moves = p.getAvaibleMoves(currState);
+        assertTrue(moves.size() == 47);
+        assertTrue(moves.stream().noneMatch(mv -> (mv.col == 3 && mv.row ==2) || (mv.col == 3 && mv.row == 2)));
     }
 
     @Test
@@ -75,10 +74,10 @@ class PathagonSearchProblemTest {
 
 
         PathagonToken blocked = new PathagonToken(1,4,5);
-        currState.setBlockedMove(blocked);
+        currState.addBlockedMove(blocked);
         myMove.col=5; myMove.row =4;
         assertFalse(p.validMove(currState,myMove),"movimiento invalido "+myMove.toString()+"/n Lugar bloqueado");
-        currState.removeBlockedMove();
+        currState.removeBlockedMoves();
 
         IntStream.range(0,currState.playerTokensLeft(myMove.player)).forEach(nbr -> currState.addMove(new PathagonToken(-1,1,1)));
         myMove.col = 1;

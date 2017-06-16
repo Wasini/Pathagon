@@ -11,11 +11,19 @@ public class PathagonToken {
     public int row;
     public int col;
     public int player;
+    private boolean nullFlag;
 
     public PathagonToken(int player, int row, int col) {
         this.row = row;
         this.col = col;
         this.player = player;
+        this.nullFlag = false;
+    }
+
+    //NullMove contructor usado para representar un movimiento que no hace nada
+    public PathagonToken(int player) {
+        this.player = player;
+        this.nullFlag = true;
     }
 
 
@@ -25,14 +33,27 @@ public class PathagonToken {
      * @return true si se encuentra en una posicion adyacente horizontal o vertical respecto a esta ficha
      */
     public boolean isAdyacent(PathagonToken other) {
-        boolean sameRowOrColumn = this.row == other.row || this.col == other.col;
-        if (sameRowOrColumn) {
-            return (Math.abs(this.row - other.row) == 1 || Math.abs(this.col - other.col) == 1);
+        if(this.isNull() || other.isNull())
+            return false;
 
-        } else {
+        return (this.colAdyacent(other) || this.rowAdyacent(other));
+    }
+
+
+    private boolean colAdyacent(PathagonToken other) {
+        if (this.col != other.col){
             return false;
         }
+        return (Math.abs(this.row-other.row) == 1);
     }
+
+    private boolean rowAdyacent(PathagonToken other) {
+        if (this.row != other.row){
+            return false;
+        }
+        return (Math.abs(this.col-other.col) == 1);
+    }
+
 
     @Override
     public String toString() {
@@ -43,13 +64,24 @@ public class PathagonToken {
                 '}';
     }
 
+
+    public boolean isNull() {
+        return this.nullFlag;
+    }
+
     //
     public boolean overlaps(PathagonToken other) {
-        if (other == null) {
+        if (other == null || this.isNull()) {
             return false;
         } else {
             return (this.row == other.row && this.col == other.col);
         }
+    }
+
+    public boolean isTrapedBy(PathagonToken fst, PathagonToken snd) {
+        if (this.player == fst.player || this.player == snd.player)
+            return false;
+        return ((this.rowAdyacent(fst)&&this.rowAdyacent(snd)) || (this.colAdyacent(fst)&&this.colAdyacent(snd)));
     }
 
 

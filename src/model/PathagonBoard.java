@@ -1,16 +1,14 @@
 package model;
 
-import com.sun.org.apache.xpath.internal.operations.Equals;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
 
-/**
- * Created by grazi on 13/06/17.
- */
 
 /*Clase PathagonBoard
-Representa un tablero de 7 filas por 7 columnas con un arreglo bidimensional de enteros.
-Inicializado con 0's
+Representa un tablero de 7 filas por 7 columnas con un arreglo bidimensional de tokens.
  */
 
 
@@ -18,53 +16,107 @@ public class PathagonBoard {
 
     public final int ROWS = 7;
     public final int COLS = 7;
-    public final int EMPTY_CELL = 0;
+    public final PathagonToken EMPTY_CELL = null;
 
     private int totalPieces;
 
-    private int[][] board;
+    private PathagonToken[][] board;
 
     //Crea un tablero de 7 filas por 7 columnas
     public PathagonBoard() {
-        this.board = new int[ROWS][COLS];
+        this.board = new PathagonToken[ROWS][COLS];
         totalPieces= 0;
     }
 
     //Copy constructor
     public PathagonBoard(PathagonBoard another) {
-        this.board = new int[ROWS][];
+        this.board = new PathagonToken[ROWS][];
         for (int i = 0; i< ROWS;i++) {
-            int[] aRow = another.getBoard()[i];
-            this.board[i] = new int[COLS];
+            PathagonToken[] aRow = another.getBoard()[i];
+            this.board[i] = new PathagonToken[COLS];
             System.arraycopy(aRow, 0, this.board[i], 0, COLS);
         }
-        this.totalPieces = another.getTotalPieces();
+        this.totalPieces = another.getTotalTokens();
     }
 
-    //Get PathagonBoard como arreglo bidimensional de enteros
-    public int[][] getBoard() {return this.board;}
+    //
+    public PathagonToken[][] getBoard() {return this.board;}
 
-    public void putPiece(int p,int row, int col){
-        this.board[row][col] = p;
+    public void addToken(int p, int row, int col){
+        this.board[row][col] = new PathagonToken(p,row,col);
+        this.totalPieces++;
+    }
+    public void addToken(PathagonToken mv){
+        this.board[mv.row][mv.col] = mv;
         this.totalPieces++;
     }
 
-    public int getPiece(int row, int col){
-        return this.board[row][col];
+    public PathagonToken getToken(int row, int col){
+        if (row < ROWS && row >= 0 && col < COLS && col >=0)
+            return this.board[row][col];
+        return null;
     }
 
-    public int getTotalPieces() {
+    public int getTotalTokens() {
         return totalPieces;
     }
 
-    public int removePiece(int row, int col){
-        int p = this.board[row][col];
-        this.board[row][col] = 0;
-        this.totalPieces--;
-        return p;
+
+    public PathagonToken removeToken(int row, int col){
+        if (row < ROWS && row >= 0 && col < COLS && col >=0){
+            PathagonToken p = this.board[row][col];
+            if (p != EMPTY_CELL) {
+                this.board[row][col] = EMPTY_CELL;
+                this.totalPieces--;
+                return p;
+            }
+        }
+        return null;
     }
 
-    @Override
+    /**
+     *
+     * @param mv
+     * @return
+     */
+    public PathagonToken removeToken(PathagonToken mv){
+        PathagonToken tk = this.board[mv.row][mv.col];
+        if (tk != EMPTY_CELL) {
+            this.board[mv.row][mv.col] = EMPTY_CELL;
+            this.totalPieces--;
+            return tk;
+        }
+        return null;
+    }
+
+    public List<PathagonToken> getAdyacents (PathagonToken mv) {
+
+        return this.getAdyacents(mv,1,(tk -> true));
+
+    }
+
+    public List<PathagonToken> getAdyacents(PathagonToken mv,Predicate<PathagonToken> p) {
+        return this.getAdyacents(mv,1,p);
+
+    };
+
+    public List<PathagonToken> getAdyacents (PathagonToken mv,int offset,Predicate<PathagonToken> p) {
+
+
+        List<PathagonToken> neighbours = new LinkedList<>();
+
+        neighbours.add(this.getToken(mv.row+offset,mv.col));
+        neighbours.add(this.getToken(mv.row-offset,mv.col));
+        neighbours.add(this.getToken(mv.row,mv.col+offset));
+        neighbours.add(this.getToken(mv.row,mv.col-offset));
+
+        neighbours.removeIf(tk -> !(tk != null && p.test(tk)));
+
+        return neighbours;
+
+    }
+
+
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -76,8 +128,5 @@ public class PathagonBoard {
         return Arrays.deepEquals(this.board,other.getBoard());
     }
 
-    public boolean freePosition(int row,int col) {
-        return this.board[row][col] == EMPTY_CELL;
-    }
 
 }

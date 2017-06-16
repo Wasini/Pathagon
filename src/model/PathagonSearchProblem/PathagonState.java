@@ -16,29 +16,32 @@ public class PathagonState implements AdversarySearchState {
     public final int MAX_TOKENS = 14;
     public final int PLAYER1 = -1;
     public final int PLAYER2 = 1;
+    public final int BOARDSIZE = 7;
     private int turn;   //Turno del juego: turn>0 => IA (player2)
     private PathagonBoard board;
-    private List<PathagonToken> player1Tokens;
-    private List<PathagonToken> player2Tokens;
-    private PathagonToken blockedMove;
+    private int player1TokenAmount;
+    private int player2TokenAmount;
+    private List<PathagonToken> blockedMoves;
     private PathagonToken lastMove;
 
 
     public PathagonState() {
         this.board = new PathagonBoard();
-        this.player1Tokens = new LinkedList<>();
-        this.player2Tokens = new LinkedList<>();
+        this.blockedMoves = new LinkedList<>();
+        this.player1TokenAmount = 0;
+        this.player2TokenAmount = 0;
         this.turn = -1;
     }
 
     //Copy constructor
     //CUIDADO: Los tokens son copiados por referencia!
+    //TODO FIX copia por referencia de las linked list de Player1/2Tokens
     public PathagonState(PathagonState another) {
         this.turn = another.getTurn();
         this.board = new PathagonBoard(another.board);
-        this.player1Tokens = new LinkedList<>(another.getPlayerTokens(PLAYER1));
-        this.player2Tokens = new LinkedList<>(another.getPlayerTokens(PLAYER2));
-        this.blockedMove = another.getBlockedMove();
+        this.player1TokenAmount = another.getPlayerTokenAmount(PLAYER1);
+        this.player2TokenAmount = another.getPlayerTokenAmount(PLAYER2);
+        this.blockedMoves = another.getBlockedMoves();
         this.lastMove = another.getLastMove();
     }
 
@@ -52,12 +55,16 @@ public class PathagonState implements AdversarySearchState {
         this.turn = turn;
     }
 
-    public PathagonToken getBlockedMove() {
-        return blockedMove;
+    public List<PathagonToken> getBlockedMoves() {
+        return blockedMoves;
     }
 
-    public void setBlockedMove(PathagonToken blockedMove) {
-        this.blockedMove = blockedMove;
+    public void addBlockedMove(PathagonToken blockedMove) {
+        this.blockedMoves.add(blockedMove);
+    }
+
+    public void removeBlockedMoves() {
+        this.blockedMoves.clear();
     }
 
     public PathagonToken getLastMove() {
@@ -72,8 +79,8 @@ public class PathagonState implements AdversarySearchState {
         return board;
     }
 
-    public List<PathagonToken> getPlayerTokens(int player) {
-        return player > 0 ? this.player2Tokens : this.player1Tokens;
+    public int getPlayerTokenAmount(int player) {
+        return player == PLAYER1 ? this.player1TokenAmount : this.player2TokenAmount;
     }
 
 
@@ -88,16 +95,12 @@ public class PathagonState implements AdversarySearchState {
     @Override
     public boolean equals(AdversarySearchState state) {
         PathagonState otherState = (PathagonState) state;
-        if (!this.player1Tokens.equals(otherState.getPlayerTokens(PLAYER1)))
-            return false;
-        if (!this.player2Tokens.equals(otherState.getPlayerTokens(PLAYER2)))
-            return false;
         if (!this.board.equals(otherState.getBoard()))
             return false;
         if (this.turn != otherState.getTurn())
             return false;
-        if(this.hasBlockedMove() && otherState.hasBlockedMove()){
-            if (!this.blockedMove.equals(otherState.getBlockedMove()))
+        if(this.hasBlockedMoves() && otherState.hasBlockedMoves()){
+            if (!this.blockedMoves.equals(otherState.getBlockedMoves()))
                 return false;
         }
         if(!this.isInitial() && !otherState.isInitial()) {
@@ -112,8 +115,16 @@ public class PathagonState implements AdversarySearchState {
         return lastMove;
     }
 
-    public boolean hasBlockedMove() {
-        return this.blockedMove != null;
+    public boolean hasBlockedMoves() {
+        return this.blockedMoves.size() != 0;
+    }
+
+    public boolean moveIsBlocked(PathagonToken mv) {
+        return this.blockedMoves.stream().anyMatch(m -> (m.overlaps(mv)));
+    }
+
+    public boolean moveIsBlocked(int row,int col) {
+        return this.blockedMoves.stream().anyMatch(m-> m.row == row && m.col == col);
     }
 
     public boolean isInitial() {
@@ -121,38 +132,50 @@ public class PathagonState implements AdversarySearchState {
     }
 
     public int playerTokensLeft(int player) {
-       return MAX_TOKENS - (player > 0 ? this.player2Tokens.size() : this.player1Tokens.size());
+       return MAX_TOKENS - (player > 0 ? this.player2TokenAmount : this.player1TokenAmount);
     }
 
-    public void removeBlockedMove() {
-        this.blockedMove = null;
-    }
+
 
     public void addMove(PathagonToken mv) {
-        if (mv.player > 0)
-            this.player2Tokens.add(mv);
-        else
-            this.player1Tokens.add(mv);
+        if (!mv.isNull()){
+            if (mv.player > 0) {
+                this.player2TokenAmount++;
+            } else {
+                this.player1TokenAmount++;
+            }
+            this.board.addToken(mv);
+            this.lastMove = mv;
+        }
     }
 
+
+    public boolean positionIsAvaible(int row,int col) {
+        if (this.board.getToken(row,col) != this.board.EMPTY_CELL)
+            return false;
+        if (this.hasBlockedMoves() && moveIsBlocked(row,col))
+            return false;
+        return true;
+    }
 
 
     /**
-     * Come una ficha en la posicion (row,col) del tablero, la remueve de la lista de fichas
-     * del jugador correspondiente y la pone como movimiento blockeado para el dueño de la ficha
-     * Si no hay ficha en la posicion (row,col) del tablero no se hace nada
-     * @param row fila del tablero
-     * @param col columna del tablero
+     * Come la ficha @tk del tablero y la pone como movimiento blockeado
+     * Si la ficha no se encuentra en el tablero no realiza nada
+     * @param tk Ficha a eliminar
+     *
      */
-    public void eatTokenAt(int row,int col) {
-        int removedTokenPlayer = this.board.getPiece(row,col);
-
-        if (removedTokenPlayer != 0) {
-            List<PathagonToken> playerTokens = getPlayerTokens(removedTokenPlayer);
-            blockedMove = findAndRemoveFirst(playerTokens,tk -> (tk.row == row && tk.col == col));
-            this.board.removePiece(row,col);
+    public void eatToken(PathagonToken tk) {
+        PathagonToken removedToken = this.board.removeToken(tk);
+        if (removedToken != null) {
+            blockedMoves.add(removedToken);
+            if (removedToken.player == PLAYER1)
+                this.player1TokenAmount--;
+            else
+                this.player2TokenAmount--;
         }
     }
+
 
     /**
      * Metodo auxiliar para encontrar un elemento que cumpla el predicado test en una lista

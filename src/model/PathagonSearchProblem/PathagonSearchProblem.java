@@ -1,12 +1,12 @@
 package model.PathagonSearchProblem;
 
 import framework.AdversarySearchProblem;
-import model.InvalidMoveException;
 import model.PathagonBoard;
 import model.PathagonToken;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by grazi on 13/06/17.
@@ -61,14 +61,25 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         return 0;
     }
 
-    //Retorna una lista con todos los posibles movimientos para el jugador del turno
+    /**Arma la lista de todos los posibles movimientos para el jugador actual
+     *Si el jugador no puede colocar mas fichas retorna la lista con el movimiento nulo
+     * @param st estado a observar los movimientos
+     * @return Lista de PathagonToken que representa movimientos
+     */
     public List<PathagonToken> getAvaibleMoves(PathagonState st){
         List<PathagonToken> moves = new LinkedList<>();
         PathagonBoard board = st.getBoard();
+        int currentPlayer = st.getTurn();
+        if (st.playerTokensLeft(currentPlayer) <= 0) {
+            moves.add(new PathagonToken(currentPlayer));
+            return moves;
+        }
+
         for (int i = 0; i < board.ROWS; i++) {
             for (int j = 0; j < board.COLS; j++) {
-                if(st.getBlockedMove().col != j || st.getBlockedMove().row!=i) {
-                    moves.add(new PathagonToken(st.getTurn(),i,j));
+                if(st.positionIsAvaible(i,j)){
+                    PathagonToken newMove = new PathagonToken(currentPlayer,i,j);
+                    moves.add(newMove);
                 }
             }
         }
@@ -76,27 +87,58 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     }
 
     /**
-     * Pre: El movimiento es valido
+     * Pre: El movimiento es valido y @st no es un estado final
+     * Post: El estado
      * @param st
      * @param mv
      * @return
      */
-    public static void applyMove(PathagonState st, PathagonToken mv){
+    public static boolean applyMove(PathagonState st, PathagonToken mv){
 
+        if (mv.isNull()) {
+            st.removeBlockedMoves();
+            st.setLastMove(mv);
+            st.setTurn(st.getTurn()*-1);
+            return true;
+        }
 
+        List<PathagonToken> posibleEated = tokensEatedBy(st,mv);
+        if(!posibleEated.isEmpty()) {
+            for (PathagonToken eated: posibleEated
+                 ) {
+                st.eatToken(eated);
+            }
+        }
+
+        st.addMove(mv);
+
+        return true;
     }
 
-    public boolean validMove(PathagonState st,PathagonToken mv)  {
+    public static boolean validMove(PathagonState st,PathagonToken mv)  {
        int playerMoving = mv.player;
        if (st.getTurn() != playerMoving)
            return false;
        if (st.playerTokensLeft(playerMoving)<=0)
            return false;
-       if (!st.getBoard().freePosition(mv.row,mv.col))
-           return false;
-       if (mv.overlaps(st.getBlockedMove()))
+       if (!st.positionIsAvaible(mv.row,mv.col))
            return false;
        return true;
+    }
+
+
+    public static List<PathagonToken> tokensEatedBy(PathagonState st,PathagonToken trapMove) {
+        List<PathagonToken> eatables = new LinkedList<>();
+        List<PathagonToken> playerAdyacentTokens = st.getBoard().getAdyacents(trapMove,2,(tk -> tk.player == trapMove.player));
+        if (playerAdyacentTokens.isEmpty())
+            return eatables;
+
+        List<PathagonToken> posibleEatable = st.getBoard().getAdyacents(trapMove,(tk -> tk.player != trapMove.player));
+        eatables = posibleEatable.stream()
+                .filter(eatable -> playerAdyacentTokens.stream().
+                        anyMatch(myOtherTk -> eatable.isTrapedBy(trapMove,myOtherTk))).collect(Collectors.toList());
+
+        return eatables;
     }
 
 

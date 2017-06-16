@@ -32,4 +32,20 @@ class PathagonTokenTest {
 
     }
 
+    @Test
+    void trappedBy() {
+        PathagonToken a = new PathagonToken(1,4,6);
+        PathagonToken b = new PathagonToken(-1,5,6);
+        PathagonToken c = new PathagonToken(1,6,6);
+        assertTrue(b.isTrapedBy(a,c),b.toString()+" atrapado por, "+a.toString()+" + "+b.toString());
+
+        a.player=-1;
+        assertFalse(b.isTrapedBy(a,c),b.toString()+"no atrapado por, "+a.toString()+" + "+b.toString());
+
+        a.player= 1;
+        a.col=5;
+        a.row=5;
+        assertFalse(b.isTrapedBy(a,c),b.toString()+"no atrapado por, "+a.toString()+" + "+b.toString());
+    }
+
 }
