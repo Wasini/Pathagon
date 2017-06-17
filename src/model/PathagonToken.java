@@ -4,6 +4,8 @@ package model;
  * Created by grazi on 13/06/17.
  */
 
+import java.util.Comparator;
+
 /**
  * Clase que representa una ficha negra o blanca de pathagon en una posicion del tablero
  */
@@ -29,14 +31,14 @@ public class PathagonToken {
 
     /**
      * Compara esta ficha con otra y evalua si esta en una casilla adyacente sin considerar las diagonales
+     * calculando la distancia entre sus posiciones
      * @param other la otra ficha de pathagon a comparar
      * @return true si se encuentra en una posicion adyacente horizontal o vertical respecto a esta ficha
      */
     public boolean isAdyacent(PathagonToken other) {
         if(this.isNull() || other.isNull())
             return false;
-
-        return (this.colAdyacent(other) || this.rowAdyacent(other));
+        return (Math.sqrt(Math.pow((this.col-other.col), 2) + Math.pow((this.row-other.row), 2)) == 1);
     }
 
 
@@ -78,11 +80,16 @@ public class PathagonToken {
         }
     }
 
+    public boolean belongsTo(int player) {
+        return (this.player > 0 == player > 0);
+    }
+
     public boolean isTrapedBy(PathagonToken fst, PathagonToken snd) {
         if (this.player == fst.player || this.player == snd.player)
             return false;
         return ((this.rowAdyacent(fst)&&this.rowAdyacent(snd)) || (this.colAdyacent(fst)&&this.colAdyacent(snd)));
     }
+
 
 
     
