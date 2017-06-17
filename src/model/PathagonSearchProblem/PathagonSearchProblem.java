@@ -98,7 +98,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         if (mv.isNull()) {
             st.removeBlockedMoves();
             st.setLastMove(mv);
-            st.setTurn(st.getTurn()*-1);
+            st.changeTurn();
             return true;
         }
 

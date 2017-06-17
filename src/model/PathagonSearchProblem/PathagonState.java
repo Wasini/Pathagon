@@ -55,6 +55,10 @@ public class PathagonState implements AdversarySearchState {
         this.turn = turn;
     }
 
+    public int getCurrentPlayer() {
+        return this.turn > 0? PLAYER2 : PLAYER1;
+    }
+
     public List<PathagonToken> getBlockedMoves() {
         return blockedMoves;
     }
