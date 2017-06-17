@@ -1,44 +1,31 @@
 package model;
 
-import java.util.List;
-
-/**
- * Created by grazi on 13/06/17.
- */
+import model.PathagonSearchProblem.MinMaxAlphaBetaEngine;
+import model.PathagonSearchProblem.PathagonSearchProblem;
+import model.PathagonSearchProblem.PathagonState;
 
 /*
 Clase que representa un juego de Pathagon donde el jugador 2 es una IA
 TODO:
  */
 public class PathagonGameEngine {
-    //Turno del juego: turn>0 => player1
-    private int turn;
 
     private String player1;
     private String player2;
+    private int iaLevel;
 
-    private List<PathagonMove> player1Moves;
-    private List<PathagonMove> player2Moves;
-
-
-    //Estado del juego
-    private PathagonState currState;
-
-    //Fichas disponibles para jugador 1(avaibleTokens[0]
-    private int[] avaibleTokens;
-
-    //Problema de busqueda para el juego Pathagon
-    private PathagonSearchProblem<PathagonState> problem;
-
+    private PathagonState currState; //Estado del juego
+    private PathagonSearchProblem<PathagonState> problem; //Problema de busqueda para el juego Pathagon
+    private MinMaxAlphaBetaEngine<PathagonSearchProblem<PathagonState>,PathagonState> ia;
     //Constructor de la clase
-    public PathagonGameEngine(String player1,String player2){
+    public PathagonGameEngine(String player1,int iaLevel){
 
         this.currState = new PathagonState();
+        this.problem = new PathagonSearchProblem<>(currState);
+        this.iaLevel = iaLevel;
+        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,iaLevel);
         this.player1 = player1;
-        this.player2 = player2;
-        updateMoves();
-
-
+        this.player2 = "ImARobot";
     }
 
 
@@ -60,56 +47,62 @@ public class PathagonGameEngine {
     }
 
     public int getTurn() {
-        return turn;
+        return this.currState.getTurn();
     }
 
-    public int nextTurn() {
-        return turn * -1;
-    }
 
-    //PRE: El movimiento mv es valido en el estado actual del juego para el jugador del turno corriente
+    //
     //POST: se modifica el estado del juego al realizar el movimiento
-    //TODO
-    public void mkMove(int row,int col) throws IllegalArgumentException {
-        PathagonMove mv = new PathagonMove(this.turn,row,col);
-        if (validMove(mv)) {
-            mv.apply(this.currState);
-        } else {
-            throw new IllegalArgumentException("Movimiento invalid " + mv.toString());
+
+    public void mkMove(int row,int col) throws InvalidMoveException {
+        PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
+        if (problem.validMove(this.currState,mv)) {
+                problem.applyMove(this.currState,mv);
+        } else
+            throw new InvalidMoveException("Movimiento no valido "+mv.toString());
+    }
+
+
+    public void iaPlay() throws InvalidMoveException{
+        if(!this.currState.isMax()) {
+            throw new InvalidMoveException("No es el turno de la maquina");
         }
 
+        PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
+        this.mkMove(iaMove.row,iaMove.col);
+
     }
 
-    //Retorna true si el movimiento @mv es aplicable al estado corriente del juego
-    //TODO
-    private boolean validMove(PathagonMove mv) {
-        return false;
+    /**
+     * Dice si el jugador del turno tiene fichas disponibles para jugar
+     * @return true si al jugador de currState le quedan fichas disponibles
+     */
+    public boolean canPlay() {
+        return currState.playerTokensLeft(currState.getCurrentPlayer())>0;
     }
 
-    ;
+
+    /**
+     * Retorna -1 si gano player1, 1 si gano player2 o 0 si es un empate
+     */
+    //TODO: Llevar en el estado del juego el resultado si este es un estado final
+    private int getGameResult() {
+        return 0;
+    }
+
+    public String getWinner(){
+        return this.getGameResult()>0? this.getPlayer2():this.getPlayer1();
+    }
 
     //Retorna true si el juego esta en un estado final
     public boolean gameEnd() {
         return this.problem.end(currState);
-    };
-
-
-
-
-
-    //Retorna una lista con todos los posibles movimientos del jugador @player para el estado @st
-    //TODO
-    private List<PathagonMove> getAvaibleMoves(int player,PathagonState st){
-        return null;
     }
-
-    //Actualiza los movimientos de acuerdo al estado actual del juego
-    private void updateMoves() {
-        this.player1Moves = getAvaibleMoves(1,this.currState);
-        this.player2Moves = getAvaibleMoves(-1,this.currState);
-    }
-
 
 
 
 }
+
+
+
+
