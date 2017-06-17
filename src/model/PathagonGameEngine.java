@@ -3,10 +3,6 @@ package model;
 import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 
-/**
- * Created by grazi on 13/06/17.
- */
-
 /*
 Clase que representa un juego de Pathagon donde el jugador 2 es una IA
 TODO:
@@ -50,13 +46,6 @@ public class PathagonGameEngine {
         return this.currState.getTurn();
     }
 
-    public int nextTurn() {
-        return this.currState.getTurn() *-1;
-    }
-
-    public void setTurn(int turn) {
-        this.currState.setTurn(turn);
-    }
 
 
     //PRE: El movimiento mv es valido en el estado actual del juego para el jugador del turno corriente

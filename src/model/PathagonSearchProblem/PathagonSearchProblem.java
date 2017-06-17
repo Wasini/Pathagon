@@ -108,9 +108,12 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
                  ) {
                 st.eatToken(eated);
             }
+        } else {
+            st.removeBlockedMoves();
         }
 
         st.addMove(mv);
+        st.changeTurn();
 
         return true;
     }

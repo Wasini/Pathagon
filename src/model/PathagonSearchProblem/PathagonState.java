@@ -135,6 +135,11 @@ public class PathagonState implements AdversarySearchState {
        return MAX_TOKENS - (player > 0 ? this.player2TokenAmount : this.player1TokenAmount);
     }
 
+    public void changeTurn(){
+        this.turn *= -1;
+    }
+
+
 
 
     public void addMove(PathagonToken mv) {
