@@ -114,11 +114,14 @@ public class PathagonPath extends TreeSet<PathagonToken> {
      * @param v ficha a agregar al camino
      */
     private void validateVertex(PathagonToken v){
-        if (this.first().player != v.player) {
-            throw new IllegalArgumentException("La ficha no es del mismo color "+v.toString());
+        if (!this.isEmpty()){
+            if (this.first().player != v.player) {
+                throw new IllegalArgumentException("La ficha no es del mismo color "+v.toString());
+            }
+            if (!this.stream().anyMatch(tk -> v.isAdyacent(tk)))
+                throw new IllegalArgumentException("La ficha no pertence al camino "+v.toString());
         }
-        if (!this.stream().anyMatch(tk -> v.isAdyacent(tk)))
-            throw new IllegalArgumentException("La ficha no pertence al camino "+v.toString());
+
     }
 
 
