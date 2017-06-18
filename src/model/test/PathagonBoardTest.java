@@ -9,9 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Created by grazi on 16/06/17.
- */
+
 class PathagonBoardTest {
 
     PathagonBoard board;

@@ -3,6 +3,7 @@ import framework.AdversarySearchState;
 import model.PathagonBoard;
 import model.PathagonToken;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class PathagonState implements AdversarySearchState {
     public final int BOARDSIZE = 7;
     private int turn;   //Turno del juego: turn>0 => IA (player2)
     private PathagonBoard board;
+    private List<PathagonToken> p1Tokens;
+    private List<PathagonToken> p2Tokens;
     private int player1TokenAmount;
     private int player2TokenAmount;
     private List<PathagonToken> blockedMoves;
@@ -28,6 +31,8 @@ public class PathagonState implements AdversarySearchState {
     public PathagonState() {
         this.board = new PathagonBoard();
         this.blockedMoves = new LinkedList<>();
+        this.p1Tokens = new LinkedList<>();
+        this.p2Tokens = new LinkedList<>();
         this.player1TokenAmount = 0;
         this.player2TokenAmount = 0;
         this.turn = -1;
@@ -35,12 +40,13 @@ public class PathagonState implements AdversarySearchState {
 
     //Copy constructor
     //CUIDADO: Los tokens son copiados por referencia!
-    //TODO FIX copia por referencia de las linked list de Player1/2Tokens
     public PathagonState(PathagonState another) {
         this.turn = another.getTurn();
         this.board = new PathagonBoard(another.board);
         this.player1TokenAmount = another.getPlayerTokenAmount(PLAYER1);
         this.player2TokenAmount = another.getPlayerTokenAmount(PLAYER2);
+        this.p1Tokens = new LinkedList<> (another.getPlayerTokens(PLAYER1));
+        this.p2Tokens = new LinkedList<> (another.getPlayerTokens(PLAYER2));
         this.blockedMoves = another.getBlockedMoves();
         this.lastMove = another.getLastMove();
     }
@@ -86,6 +92,11 @@ public class PathagonState implements AdversarySearchState {
     public int getPlayerTokenAmount(int player) {
         return player == PLAYER1 ? this.player1TokenAmount : this.player2TokenAmount;
     }
+
+    public List<PathagonToken> getPlayerTokens(int player) {
+        return player == PLAYER1 ? this.p1Tokens : this.p2Tokens;
+    }
+
 
 
     ////////////////////
@@ -150,8 +161,10 @@ public class PathagonState implements AdversarySearchState {
         if (!mv.isNull()){
             if (mv.player > 0) {
                 this.player2TokenAmount++;
+                this.p1Tokens.add(mv);
             } else {
                 this.player1TokenAmount++;
+                this.p2Tokens.add(mv);
             }
             this.board.addToken(mv);
             this.lastMove = mv;
