@@ -76,7 +76,7 @@ public class graphicMenuGame extends javax.swing.JFrame {
         }        
         if(name.getText().isEmpty()){
             JOptionPane.showMessageDialog(null,"No ingreso nombre del Jugador: 'Player1' es su nombre","Mensaje de Advertencia",JOptionPane.ERROR_MESSAGE);
-            game.player.setText("Player1");
+            game.player.setText("Player1");           
         }else{
             game.player.setText(name.getText()); 
         }       

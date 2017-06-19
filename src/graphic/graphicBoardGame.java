@@ -842,7 +842,7 @@ public class graphicBoardGame extends javax.swing.JFrame {
                         p42.setBackground(Color.BLACK);;
                         break;
                 }
-                break;
+            break;
         }  
     }
 

@@ -91,7 +91,6 @@ public class PathagonController {
         if(!this.currState.isMax()) {
             throw new InvalidMoveException("No es el turno de la maquina");
         }
-
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
         if(iaMove.isNull()){
             this.changeTurn();
