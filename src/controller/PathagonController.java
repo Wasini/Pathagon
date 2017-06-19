@@ -22,10 +22,19 @@ public class PathagonController {
     private MinMaxAlphaBetaEngine<PathagonSearchProblem<PathagonState>,PathagonState> ia;
     private PathagonView view;
 
-    //Constructor de la clase
+
     public PathagonController(){
+
     }
 
+    public void newGame(String player,int difficulty) {
+        this.currState = new PathagonState();
+        this.problem = new PathagonSearchProblem<>(currState);
+        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
+        this.turnNumber = 0;
+        this.player1 = player1;
+        this.player2 = "ImARobot";
+    }
 
 
     public String getPlayer1() {
@@ -48,23 +57,8 @@ public class PathagonController {
         return this.currState.getTurn();
     }
 
-
     public int getTurnNumber() {
         return turnNumber;
-    }
-
-
-    //
-    //POST: se modifica el estado del juego al realizar el movimiento
-
-
-    public void newGame(String player,int difficulty) {
-        this.currState = new PathagonState();
-        this.problem = new PathagonSearchProblem<>(currState);
-        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
-        this.turnNumber = 0;
-        this.player1 = player1;
-        this.player2 = "ImARobot";
     }
 
     public void setView(PathagonView view) {
@@ -73,6 +67,10 @@ public class PathagonController {
 
     public PathagonView getView(){return this.view; };
 
+
+
+    //
+    //POST: se modifica el estado del juego al realizar el movimiento
 
     public void mkMove(int row,int col) throws InvalidMoveException {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);

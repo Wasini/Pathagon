@@ -1,35 +1,40 @@
-package model.test;
+package controller.test;
 
+import controller.PathagonController;
 import model.InvalidMoveException;
-import model.PathagonGameController;
 import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import view.DummyView;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-class PathagonControllerEngineTest {
-    PathagonGameController myGame;
+class PathagonControllerTest {
+    PathagonController myGame;
     PathagonState st;
     PathagonState st2;
     PathagonSearchProblem<PathagonState> problem;
 
     @BeforeEach
     void setUp() {
-        myGame = new PathagonGameController("Yo",5);
+        myGame = new PathagonController();
+        myGame.newGame("Tester",4);
+        myGame.setView(new DummyView(myGame));
     }
 
     @Test
     void mkMove() {
 
         try {
-            myGame.mkMove(3,0);
-            st = myGame.getCurrState();
+            st = myGame.getState();
+            myGame.mkMove(0,0);
             myGame.iaPlay();
-            myGame.mkMove(3,1);
+            myGame.mkMove(0,1);
+            myGame.iaPlay();
+            myGame.mkMove(3,2);
             myGame.iaPlay();
             myGame.mkMove(3,3);
             myGame.iaPlay();
