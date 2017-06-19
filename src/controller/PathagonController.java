@@ -32,8 +32,8 @@ public class PathagonController {
         this.problem = new PathagonSearchProblem<>(currState);
         this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
         this.turnNumber = 0;
-        this.player1 = player1;
-        this.player2 = "ImARobot";
+        this.setPlayer1(player1);
+        this.setPlayer2("BepBop");
     }
 
 
@@ -76,12 +76,14 @@ public class PathagonController {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (!canPlay()) {
             changeTurn();
+            view.updateView();
         }
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
                 view.updateView();
         } else
+            throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
             view.alertInvalidMove();
     }
 
@@ -97,6 +99,15 @@ public class PathagonController {
         } else
             this.mkMove(iaMove.row,iaMove.col);
 
+    }
+
+    public void playerPlay(int row,int col) throws InvalidMoveException {
+        if (this.currState.isMax()) {
+            view.alertInvalidTurn();
+            throw new InvalidMoveException("No es el turno de "+this.getPlayer1());
+        } else {
+            mkMove(row,col);
+        }
     }
 
     public void changeTurn(){

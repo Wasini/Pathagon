@@ -34,7 +34,7 @@ class PathagonControllerTest {
             myGame.iaPlay();
             myGame.mkMove(0,1);
             myGame.iaPlay();
-            myGame.mkMove(3,2);
+            myGame.mkMove(0,0);
             myGame.iaPlay();
             myGame.mkMove(3,3);
             myGame.iaPlay();

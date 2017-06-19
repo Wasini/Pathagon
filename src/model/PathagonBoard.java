@@ -116,6 +116,12 @@ public class PathagonBoard {
 
     }
 
+    @Override
+    public String toString() {
+        return "PathagonBoard{" +
+                "board=" + Arrays.toString(board) +
+                '}';
+    }
 
     public boolean equals(Object obj) {
         if (obj == null) {

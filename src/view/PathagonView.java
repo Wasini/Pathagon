@@ -40,4 +40,6 @@ public abstract class PathagonView extends JPanel {
      * Muestra el ganador del juego
      */
     public abstract void alertWinner(String player);
+
+    public abstract void alertInvalidTurn();
 }
