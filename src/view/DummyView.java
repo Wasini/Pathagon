@@ -1,17 +1,17 @@
 package view;
 
+
 import controller.PathagonController;
-import model.PathagonGameEngine;
-
-
 
 public class DummyView extends PathagonView {
 
+    public DummyView(PathagonController c) {
+        super(c);
+    }
+
 
     //Setup de la vista
-    public DummyView(PathagonGameEngine g, PathagonController c) {
-        super(g, c);
-    }
+
 
     //TODO Actualizar la vista con el estado del juego
     public void updateView() {
@@ -23,6 +23,11 @@ public class DummyView extends PathagonView {
 
     //TODO informa de movimento invalido
     public void alertInvalidMove() {
+    }
+
+    @Override
+    public void alertWinner(String player) {
+
     }
 
 

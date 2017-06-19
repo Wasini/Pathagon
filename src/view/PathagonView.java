@@ -1,7 +1,7 @@
 package view;
 
 import controller.PathagonController;
-import model.PathagonGameEngine;
+import model.PathagonSearchProblem.PathagonState;
 
 import javax.swing.*;
 
@@ -11,15 +11,12 @@ import javax.swing.*;
 public abstract class PathagonView extends JPanel {
 
 
-    protected PathagonGameEngine game;
+    protected PathagonState gameState;
     protected PathagonController gameControl;
 
-    public PathagonView(PathagonController c) {
-        gameControl = c;
-    }
 
-    public PathagonView(PathagonGameEngine g,PathagonController c) {
-        game = g;
+    public PathagonView(PathagonController c) {
+        gameState = c.getState();
         gameControl = c;
     }
 
@@ -37,4 +34,10 @@ public abstract class PathagonView extends JPanel {
      * Informa sobre movimiento invalido
      */
     public abstract void alertInvalidMove();
+
+
+    /**
+     * Muestra el ganador del juego
+     */
+    public abstract void alertWinner(String player);
 }
