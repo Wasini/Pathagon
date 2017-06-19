@@ -75,7 +75,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         if (p2MaxPath == state.BOARDSIZE)
             return maxValue();
 
-        return (p2MaxPath * 6 + p1MaxPath * 6 + state.playerTokensLeft(state.PLAYER2) - state.playerTokensLeft(state.PLAYER1));
+        return (p2MaxPath * 6 - p1MaxPath * 6 + state.playerTokensLeft(state.PLAYER2) - state.playerTokensLeft(state.PLAYER1));
 
 
 
@@ -164,6 +164,8 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     public static boolean validMove(PathagonState st,PathagonToken mv)  {
        int playerMoving = mv.player;
        if (st.getTurn() != playerMoving)
+           return false;
+       if (mv.col >= st.BOARDSIZE || mv.col < 0 || mv.row < 0 || mv.row >= st.BOARDSIZE)
            return false;
        if (st.playerTokensLeft(playerMoving)<=0)
            return false;

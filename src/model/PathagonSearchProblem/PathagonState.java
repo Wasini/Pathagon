@@ -158,13 +158,14 @@ public class PathagonState implements AdversarySearchState {
 
 
     public void addMove(PathagonToken mv) {
+
         if (!mv.isNull()){
             if (mv.player > 0) {
                 this.player2TokenAmount++;
-                this.p1Tokens.add(mv);
+                this.p2Tokens.add(mv);
             } else {
                 this.player1TokenAmount++;
-                this.p2Tokens.add(mv);
+                this.p1Tokens.add(mv);
             }
             this.board.addToken(mv);
             this.lastMove = mv;
