@@ -1,5 +1,6 @@
 package controller;
 
+import controller.additional.Pair;
 import model.InvalidMoveException;
 import model.PathagonSearchProblem.MinMaxAlphaBetaEngine;
 import model.PathagonSearchProblem.PathagonSearchProblem;
@@ -22,19 +23,16 @@ public class PathagonController {
     private MinMaxAlphaBetaEngine<PathagonSearchProblem<PathagonState>,PathagonState> ia;
     private PathagonView view;
 
-
-    public PathagonController(){
-
-    }
-
-    public void newGame(String player,int difficulty) {
+    public PathagonController(String p, int dif) {
         this.currState = new PathagonState();
         this.problem = new PathagonSearchProblem<>(currState);
-        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
+        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,dif);
         this.turnNumber = 0;
-        this.player1 = player1;
+        this.player1 = p;
         this.player2 = "ImARobot";
     }
+
+
 
 
     public String getPlayer1() {
@@ -72,7 +70,7 @@ public class PathagonController {
     //
     //POST: se modifica el estado del juego al realizar el movimiento
 
-    public void mkMove(int row,int col) throws InvalidMoveException {
+    public boolean mkMove(int row,int col) throws InvalidMoveException {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (!canPlay()) {
             changeTurn();
@@ -80,13 +78,16 @@ public class PathagonController {
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
-                view.updateView();
-        } else
+                //view.updateView();
+                return true;
+        } else{
             view.alertInvalidMove();
+            return false;
+        }
     }
 
 
-    public void iaPlay() throws InvalidMoveException{
+    public Pair iaPlay() throws InvalidMoveException{
         if(!this.currState.isMax()) {
             throw new InvalidMoveException("No es el turno de la maquina");
         }
@@ -94,9 +95,11 @@ public class PathagonController {
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
         if(iaMove.isNull()){
             this.changeTurn();
-        } else
+        } else{
             this.mkMove(iaMove.row,iaMove.col);
-
+            return new Pair(iaMove.row,iaMove.col);
+        }
+        return new Pair (-1,-1);
     }
 
     public void changeTurn(){
