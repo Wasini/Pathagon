@@ -1,4 +1,4 @@
-package view;
+package graphic;
 
 
 import controller.PathagonController;
@@ -27,6 +27,11 @@ public class DummyView extends PathagonView {
 
     @Override
     public void alertWinner(String player) {
+
+    }
+
+    @Override
+    public void alertInvalidTurn() {
 
     }
 

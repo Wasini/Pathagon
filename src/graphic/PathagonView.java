@@ -1,4 +1,4 @@
-package view;
+package graphic;
 
 import controller.PathagonController;
 import model.PathagonSearchProblem.PathagonState;
@@ -8,7 +8,7 @@ import javax.swing.*;
 /**
  * Created by grazi on 18/06/17.
  */
-public abstract class PathagonView extends JPanel {
+public abstract class PathagonView extends javax.swing.JFrame{
 
 
     protected PathagonState gameState;

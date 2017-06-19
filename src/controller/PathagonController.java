@@ -1,11 +1,14 @@
 package controller;
 
+import controller.additional.Pair;
 import model.InvalidMoveException;
 import model.PathagonSearchProblem.MinMaxAlphaBetaEngine;
 import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
-import view.PathagonView;
+import graphic.PathagonView;
+
+import java.util.concurrent.TimeUnit;
 
 /*
 Clase que representa un juego de Pathagon donde el jugador 2 es una IA
@@ -35,6 +38,7 @@ public class PathagonController {
         this.setPlayer1(player1);
         this.setPlayer2("BepBop");
     }
+
 
 
     public String getPlayer1() {
@@ -72,7 +76,7 @@ public class PathagonController {
     //
     //POST: se modifica el estado del juego al realizar el movimiento
 
-    public void mkMove(int row,int col) throws InvalidMoveException {
+    public boolean mkMove(int row,int col) throws InvalidMoveException {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (!canPlay()) {
             changeTurn();
@@ -82,31 +86,51 @@ public class PathagonController {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
                 view.updateView();
-        } else
-            throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
+                return true;
+        } else {
+
             view.alertInvalidMove();
+            throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
+        }
     }
 
 
-    public void iaPlay() throws InvalidMoveException{
+    public Pair iaPlay() throws InvalidMoveException{
         if(!this.currState.isMax()) {
             throw new InvalidMoveException("No es el turno de la maquina");
         }
-
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
         if(iaMove.isNull()){
             this.changeTurn();
-        } else
+        } else{
             this.mkMove(iaMove.row,iaMove.col);
-
+            return new Pair(iaMove.row,iaMove.col);
+        }
+        return new Pair (-1,-1);
     }
 
-    public void playerPlay(int row,int col) throws InvalidMoveException {
+
+    /**
+     * Realizae el movimiento del jugador en la pos row/col si es posible
+     * Si el movimeinto es realizado le pasa el control a la maquina para que realize el siguiente movimiento
+     * @param row
+     * @param col
+     * @return True si el movimiento se realizo
+     * @throws InvalidMoveException
+     * @throws InterruptedException
+     */
+    public boolean playerPlay(int row,int col) throws InvalidMoveException, InterruptedException {
         if (this.currState.isMax()) {
             view.alertInvalidTurn();
             throw new InvalidMoveException("No es el turno de "+this.getPlayer1());
         } else {
-            mkMove(row,col);
+            if (mkMove(row,col)) {
+                Thread.sleep(1300);
+                iaPlay();
+                return true;
+
+            } else
+                return false;
         }
     }
 
