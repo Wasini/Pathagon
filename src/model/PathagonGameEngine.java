@@ -12,6 +12,7 @@ public class PathagonGameEngine {
 
     private String player1;
     private String player2;
+    private int turnNumber;
     private int iaLevel;
 
     private PathagonState currState; //Estado del juego
@@ -20,10 +21,11 @@ public class PathagonGameEngine {
     //Constructor de la clase
     public PathagonGameEngine(String player1,int iaLevel){
 
+
         this.currState = new PathagonState();
         this.problem = new PathagonSearchProblem<>(currState);
-        this.iaLevel = iaLevel;
         this.ia = new MinMaxAlphaBetaEngine<>(this.problem,iaLevel);
+        this.turnNumber = 0;
         this.player1 = player1;
         this.player2 = "ImARobot";
     }
@@ -50,7 +52,13 @@ public class PathagonGameEngine {
         return this.currState.getTurn();
     }
 
+    public PathagonState getCurrState() {
+        return currState;
+    }
 
+    public int getTurnNumber() {
+        return turnNumber;
+    }
     //
     //POST: se modifica el estado del juego al realizar el movimiento
 
@@ -58,6 +66,7 @@ public class PathagonGameEngine {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
+                this.turnNumber++;
         } else
             throw new InvalidMoveException("Movimiento no valido "+mv.toString());
     }
@@ -73,6 +82,11 @@ public class PathagonGameEngine {
 
     }
 
+    public void changeTurn(){
+        this.currState.changeTurn();
+        this.turnNumber++;
+    }
+
     /**
      * Dice si el jugador del turno tiene fichas disponibles para jugar
      * @return true si al jugador de currState le quedan fichas disponibles
@@ -82,11 +96,15 @@ public class PathagonGameEngine {
     }
 
 
+    public void setIaLevel(int difficulty) {
+        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
+    };
+
     /**
      * Retorna -1 si gano player1, 1 si gano player2 o 0 si es un empate
+     *TODO: Calcular el resultado
      */
-    //TODO: Llevar en el estado del juego el resultado si este es un estado final
-    private int getGameResult() {
+    public int getGameResult() {
         return 0;
     }
 
@@ -95,7 +113,7 @@ public class PathagonGameEngine {
     }
 
     //Retorna true si el juego esta en un estado final
-    public boolean gameEnd() {
+    public boolean hasEnded() {
         return this.problem.end(currState);
     }
 
