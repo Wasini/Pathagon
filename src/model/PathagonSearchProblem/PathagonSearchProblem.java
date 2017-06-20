@@ -28,6 +28,8 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
 
     public PathagonSearchProblem() {
         this.initial = new PathagonState();
+        this.p1Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
+        this.p2Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
     }
 
     @Override
@@ -54,7 +56,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
      */
     @Override
     public boolean end(PathagonState state) {
-        if (state.playerTokensLeft(state.PLAYER1) == 0 && state.playerTokensLeft(state.PLAYER2) == 0)
+        if (state.getBoard().getTotalTokens() == 14)
             return true;
         this.computePaths(state);
         if (this.p1Paths.isEmpty() || this.p2Paths.isEmpty() )
@@ -78,7 +80,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         int p1Extension = p1Paths.isEmpty() ? 0 : p1Paths.first().extension();
         int p2Extension = p2Paths.isEmpty() ? 0 : p2Paths.first().extension();
 
-        int blockedPositionsValue;
+        int blockedPositionsValue = 0;
         if (state.hasBlockedMoves()) {
             blockedPositionsValue = state.getBlockedMoves().stream().mapToInt(tk -> tk.player).sum() * -1;
         }
@@ -88,7 +90,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         if (p2Extension == state.BOARDSIZE)
             return maxValue();
 
-        return (p1Extension * 6 - p2Extension * 6 + state.playerTokensLeft(state.PLAYER2) - state.playerTokensLeft(state.PLAYER1));
+        return (p1Extension * 6 - p2Extension * 6 + blockedPositionsValue*2);
 
 
 
@@ -220,7 +222,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
      * @param firstToken ficha generadora del camino
      * @return PathagonPath que representa el conjunto de fichas que estan conectadas con firstToken
      */
-    private static PathagonPath generatePath(PathagonBoard board,PathagonToken firstToken) {
+    public static PathagonPath generatePath(PathagonBoard board, PathagonToken firstToken) {
 
         PathagonPath pathOfCurrent = new PathagonPath(firstToken.player);
         pathOfCurrent.add(firstToken);
@@ -228,10 +230,18 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         List<PathagonToken> adjs = board.getAdyacents(firstToken, adj -> firstToken.player == adj.player);
         while (!adjs.isEmpty()) {
             PathagonToken curr2 = adjs.remove(0);
-            pathOfCurrent.add(curr2);
-            board.getAdyacents(firstToken, adj -> firstToken.player == adj.player).stream()
-                    .filter(tk -> !pathOfCurrent.contains(tk) && !adjs.contains(tk))
-                    .collect(Collectors.toCollection(() -> adjs));
+            if (!pathOfCurrent.contains(curr2))
+                pathOfCurrent.add(curr2);
+
+            List<PathagonToken> nuevos = new LinkedList<>(board.getAdyacents(curr2, adj -> firstToken.player == adj.player));
+            for (PathagonToken n : nuevos) {
+                if (!pathOfCurrent.contains(n)) {
+                    adjs.add(n);
+                }
+            }
+            //board.getAdyacents(firstToken, adj -> firstToken.player == adj.player).stream()
+            //        .filter(tk -> !pathOfCurrent.contains(tk) && !adjs.contains(tk))
+            //        .collect(Collectors.toCollection(() -> adjs));
         }
 
         return pathOfCurrent;
