@@ -21,7 +21,7 @@ class PathagonControllerTest {
     @BeforeEach
     void setUp() {
         myGame = new PathagonController();
-        myGame.newGame("Tester",4);
+        myGame.newGame("Tester",1);
         myGame.setView(new DummyView(myGame));
     }
 
@@ -30,20 +30,22 @@ class PathagonControllerTest {
 
         try {
             st = myGame.getState();
-            myGame.mkMove(0,0);
-            myGame.iaPlay();
-            myGame.mkMove(0,1);
-            myGame.iaPlay();
-            myGame.mkMove(0,0);
-            myGame.iaPlay();
-            myGame.mkMove(3,3);
-            myGame.iaPlay();
-            myGame.mkMove(3,4);
-            myGame.iaPlay();
-            myGame.mkMove(3,5);
-            myGame.iaPlay();
-            myGame.mkMove(3,6);
-            myGame.iaPlay();
+            int value;
+            myGame.mkMove(3,1);
+            value = myGame.getValue();
+            myGame.mkMove(3,0);
+            myGame.mkMove(4,0);
+            value = myGame.getValue();
+
+            myGame.mkMove(3,2);
+            value = myGame.getValue();
+            value = myGame.getValue();
+
+
+
+
+
+            //  assertTrue(myGame.hasEnded());
 
 
 

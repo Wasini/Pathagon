@@ -8,6 +8,7 @@ import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 import graphic.PathagonView;
 
+import java.security.UnresolvedPermission;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -70,6 +71,10 @@ public class PathagonController {
     }
 
     public PathagonView getView(){return this.view; };
+
+    public int getValue() {
+      return this.problem.value(currState);
+    };
 
 
 
@@ -157,12 +162,21 @@ public class PathagonController {
         return this.currState;
     }
 
-    /**
+    /**Pre el juego termino
      * Retorna -1 si gano player1, 1 si gano player2 o 0 si es un empate
      *TODO: Calcular el resultado
      */
     private int getGameResult() {
-        return 0;
+        int tokensLeft = currState.playerTokensLeft(currState.PLAYER1) + currState.playerTokensLeft(currState.PLAYER2);
+        if (tokensLeft == 0)
+            return 0;
+        int stateValue = problem.value(currState);
+
+        if (stateValue == problem.minValue())
+            return -1;
+        if (stateValue == problem.maxValue())
+            return 1;
+        return 99; //NO DEERIA RETORNAR ESTO
     }
 
     public String getWinner(){

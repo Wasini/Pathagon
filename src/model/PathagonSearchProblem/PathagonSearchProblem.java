@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 public class PathagonSearchProblem<P> implements AdversarySearchProblem<PathagonState> {
 
     protected PathagonState initial;
+    private TreeSet<PathagonPath> p1Paths; //Caminos del jugador 1 ordenados por extension en forma decreciente
+    private TreeSet<PathagonPath> p2Paths; //Caminos del jugador 2 ordenados por extension en forma decreciente
 
     public PathagonSearchProblem(PathagonState initial) {
+        this.p1Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
+        this.p2Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
         this.initial = initial;
     }
 
@@ -52,7 +56,10 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     public boolean end(PathagonState state) {
         if (state.playerTokensLeft(state.PLAYER1) == 0 && state.playerTokensLeft(state.PLAYER2) == 0)
             return true;
-        if (computeMaxPathExtension(state,state.PLAYER1) == state.BOARDSIZE || computeMaxPathExtension(state,state.PLAYER2) == state.BOARDSIZE)
+        this.computePaths(state);
+        if (this.p1Paths.isEmpty() || this.p2Paths.isEmpty() )
+            return false;
+        if (this.p1Paths.first().extension() == state.BOARDSIZE || this.p2Paths.first().extension() == state.BOARDSIZE)
             return true;
         return false;
     }
@@ -67,15 +74,21 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     @Override
     public int value(PathagonState state) {
 
-        int p1MaxPath = computeMaxPathExtension(state,state.PLAYER1);
-        int p2MaxPath = computeMaxPathExtension(state,state.PLAYER2);
+        this.computePaths(state);
+        int p1Extension = p1Paths.isEmpty() ? 0 : p1Paths.first().extension();
+        int p2Extension = p2Paths.isEmpty() ? 0 : p2Paths.first().extension();
 
-        if (p1MaxPath == state.BOARDSIZE)
+        int blockedPositionsValue;
+        if (state.hasBlockedMoves()) {
+            blockedPositionsValue = state.getBlockedMoves().stream().mapToInt(tk -> tk.player).sum() * -1;
+        }
+
+        if (p1Extension == state.BOARDSIZE)
             return minValue();
-        if (p2MaxPath == state.BOARDSIZE)
+        if (p2Extension == state.BOARDSIZE)
             return maxValue();
 
-        return (p2MaxPath * 6 - p1MaxPath * 6 + state.playerTokensLeft(state.PLAYER2) - state.playerTokensLeft(state.PLAYER1));
+        return (p1Extension * 6 - p2Extension * 6 + state.playerTokensLeft(state.PLAYER2) - state.playerTokensLeft(state.PLAYER1));
 
 
 
@@ -175,33 +188,28 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     }
 
 
+
     /**
-     * Calcula cuanto se extiende el camino mas largo considerando las filas
-     * o columnas de acuerdo al jugador dado
-     * Jugador 2 -> columnas
-     * Jugador 1 -> filas
+     * Agrera los caminos armados por las fichas del player1 en p1Paths y las del jugador 2 en p2Paths
      * @param st Estado del juego
-     * @param player jugador
-     * @return entero que representa la cantidad de casillas ocupadas horizontal o verticalmente por el camino mas largo del jugador dado
      */
-    private static int computeMaxPathExtension(PathagonState st,int player) {
-        List<PathagonToken> pTokens = new LinkedList<>(st.getPlayerTokens(player));
+    private void computePaths(PathagonState st) {
+        List<PathagonToken> tokens = new LinkedList<>(st.getPlayerTokens(st.PLAYER1));
+        tokens.addAll(st.getPlayerTokens(st.PLAYER2));
 
         PathagonBoard board = st.getBoard();
-        int maxExtension = 0;
 
-        while(!pTokens.isEmpty()) {
+        while(!tokens.isEmpty()) {
 
-            PathagonToken curr = pTokens.remove(0);
+            PathagonToken curr = tokens.remove(0);
             PathagonPath currPath = generatePath(board,curr);
-            maxExtension = Math.max(maxExtension,currPath.extension());
+            if (curr.player == st.PLAYER1)
+                this.p1Paths.add(currPath);
+            else
+                this.p2Paths.add(currPath);
 
-            if (maxExtension == st.BOARDSIZE)
-                return maxExtension;
-
-            pTokens.removeAll(currPath);
+            tokens.removeAll(currPath);
         }
-        return maxExtension;
     }
 
 
