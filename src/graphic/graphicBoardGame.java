@@ -909,20 +909,20 @@ public class graphicBoardGame extends PathagonView{
 
     @Override
     public void alertDraw() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JOptionPane.showMessageDialog(null,"¡Eso estuvo reñido! ¡Es un merecido empate!","Aviso: ",JOptionPane.WARNING_MESSAGE);
+        dispose();
     }
 
     @Override
     public void alertInvalidMove() {
         JOptionPane.showMessageDialog(null,"Movimiento invalido!!","Advertencia",JOptionPane.WARNING_MESSAGE);            
-        
-        //No se que va aca....
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void alertWinner(String player) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String msj="Ese fue un gran juego pero "+player+" lo hizo mejor. TENEMOS UN GANADOR";
+        JOptionPane.showMessageDialog(null,msj,"¡FELICIDADES!",JOptionPane.WARNING_MESSAGE);
+        dispose();
     }
 
     @Override

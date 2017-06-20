@@ -56,14 +56,12 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
      */
     @Override
     public boolean end(PathagonState state) {
-        if (state.getBoard().getTotalTokens() == 14)
+        if (state.getBoard().getTotalTokens() == 28)
             return true;
         this.computePaths(state);
         if (this.p1Paths.isEmpty() || this.p2Paths.isEmpty() )
             return false;
-        if (this.p1Paths.first().extension() == state.BOARDSIZE || this.p2Paths.first().extension() == state.BOARDSIZE)
-            return true;
-        return false;
+        return this.p1Paths.first().extension() == state.BOARDSIZE || this.p2Paths.first().extension() == state.BOARDSIZE;
     }
 
 

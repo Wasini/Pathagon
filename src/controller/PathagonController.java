@@ -30,7 +30,7 @@ public class PathagonController {
         this.problem = new PathagonSearchProblem<>(currState);
         this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
         this.turnNumber = 0;
-        this.setPlayer1(player1);
+        this.setPlayer1(player);
         this.setPlayer2("BepBop");
     }
 
@@ -81,6 +81,7 @@ public class PathagonController {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
                 view.updateView();
+                showResult();
                 return true;
         } else {
             view.alertInvalidMove();
@@ -99,6 +100,7 @@ public class PathagonController {
             this.changeTurn();
         } else{
             this.mkMove(iaMove.row,iaMove.col);
+            showResult();
         }
     }
 
