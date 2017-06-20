@@ -150,6 +150,11 @@ public class PathagonState implements AdversarySearchState {
        return MAX_TOKENS - (player > 0 ? this.player2TokenAmount : this.player1TokenAmount);
     }
 
+
+    /**
+     * Cambia el turno del juego, si el jugador cambio de turno por que no le quedaron fichas
+     * se agrega el movimiento nulo de ese jugador a la ultima jugada
+     */
     public void changeTurn(){
         this.turn *= -1;
     }
@@ -169,7 +174,11 @@ public class PathagonState implements AdversarySearchState {
             }
             this.board.addToken(mv);
             this.lastMove = mv;
+            this.lastMove.isNull = false;
+        } else {
+            this.lastMove = mv;
         }
+
     }
 
 

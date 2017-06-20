@@ -30,10 +30,6 @@ public abstract class PathagonView extends javax.swing.JFrame{
      */
     public abstract void alertDraw();
 
-    /**
-     * Informa sobre movimiento invalido
-     */
-    public abstract void alertInvalidMove();
 
 
     /**
@@ -41,5 +37,6 @@ public abstract class PathagonView extends javax.swing.JFrame{
      */
     public abstract void alertWinner(String player);
 
-    public abstract void alertInvalidTurn();
+
+
 }

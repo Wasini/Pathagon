@@ -29,7 +29,6 @@ public class PathagonController {
         this.currState = new PathagonState();
         this.problem = new PathagonSearchProblem<>(currState);
         this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
-        this.turnNumber = 0;
         this.setPlayer1(player);
         this.setPlayer2("BepBop");
     }
@@ -67,27 +66,10 @@ public class PathagonController {
     public PathagonView getView(){return this.view; };
 
 
-
-    //
-    //POST: se modifica el estado del juego al realizar el movimiento
-
-    public boolean mkMove(int row,int col) {
-        PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
-        if (!canPlay()) {
-            changeTurn();
-            view.updateView();
-        }
-        if (problem.validMove(this.currState,mv)) {
-                problem.applyMove(this.currState,mv);
-                this.turnNumber++;
-                view.updateView();
-                showResult();
-                return true;
-        } else {
-            view.alertInvalidMove();
-            return false;
-        }
-    }
+    /**
+     * Jugada de la maquina
+     * si no tiene fichas pasa el turno al otro jugador
+     */
 
 
     public void iaPlay() {
@@ -97,48 +79,53 @@ public class PathagonController {
         }
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
         if(iaMove.isNull()){
-            this.changeTurn();
+            nextTurn();
         } else{
-            this.mkMove(iaMove.row,iaMove.col);
-            showResult();
+            problem.applyMove(this.currState, iaMove);
+            view.updateView();
         }
     }
 
 
     /**
      * Realizae el movimiento del jugador en la pos row/col si es posible
-     * Si el movimeinto es realizado le pasa el control a la maquina para que realize el siguiente movimiento
+     * Le avisa  a la vista luego de realizar el movimiento
      * @param row
      * @param col
      * @return True si el movimiento se realizo
-     * @throws InvalidMoveException
-     * @throws InterruptedException
      */
-    public void playerPlay(int row,int col){
-        if (this.currState.isMax()) {
-            view.alertInvalidTurn();
-            //JOptionPane.showMessageDialog(null,"No es el turno de "+this.getPlayer1(),"Aviso:",JOptionPane.WARNING_MESSAGE);
-            return;
+    public boolean playerPlay(int row,int col){
+
+
+        if (!canPlay(currState.PLAYER1)) {
+            return false;
+        }
+
+        PathagonToken mv = new PathagonToken(currState.PLAYER1,row,col);
+        if (validPosition(row,col,currState.PLAYER1)) {
+            problem.applyMove(this.currState, mv);
+            view.updateView();
+            return true;
         } else {
-            if (mkMove(row,col)) {
-                //Thread.sleep(1300);
-                iaPlay();
-            }
+            return false;
         }
     }
 
-    public void changeTurn(){
-        this.currState.changeTurn();
-        this.turnNumber++;
-        view.updateView();
-    }
 
     /**
-     * Dice si el jugador del turno tiene fichas disponibles para jugar
-     * @return true si al jugador de currState le quedan fichas disponibles
+     * Dice si el jugador dado puede jugar (es su turno y le quedan fichas)
+     * @return true si a player le quedna fichas y es su turno
      */
-    public boolean canPlay() {
+    public boolean canPlay(int PLAYER) {
         return currState.playerTokensLeft(currState.getCurrentPlayer())>0;
+    }
+
+    public boolean playerHasTurn() {
+        return currState.getTurn() == currState.PLAYER1;
+    }
+
+    public boolean validPosition(int x,int y,int player) {
+        return problem.validMove(currState,new PathagonToken(player,x,y));
     }
 
 
@@ -152,9 +139,8 @@ public class PathagonController {
 
     /**Pre el juego termino
      * Retorna -1 si gano player1, 1 si gano player2 o 0 si es un empate
-     *TODO: Calcular el resultado
      */
-    private int getGameResult() {
+    public int getGameResult() {
         int tokensLeft = currState.playerTokensLeft(currState.PLAYER1) + currState.playerTokensLeft(currState.PLAYER2);
         if (tokensLeft == 0)
             return 0;
@@ -176,17 +162,23 @@ public class PathagonController {
         return this.problem.end(currState);
     }
 
+    //Cambia al siguiente turno
+    //Setea ulitmo movmiento a nulo
+    public void nextTurn() {
+        this.currState.setLastMove(new PathagonToken(this.currState.getCurrentPlayer()));
+        this.currState.changeTurn();
+        view.updateView();
+    }
+
     /**
      * Le dice a la vista que muestre el resultado del juego
      * Pre: El juego esta en un estado final
      */
     public void showResult() {
-        if (this.hasEnded()) {
             if (getGameResult() == 0 ) {
                 view.alertDraw();
             } else
                 view.alertWinner(getWinner());
-        }
     }
 
 

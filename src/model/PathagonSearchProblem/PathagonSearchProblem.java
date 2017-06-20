@@ -44,6 +44,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         for (PathagonToken mv : moves) {
             PathagonState child = new PathagonState(state);
             applyMove(child,mv);
+            child.changeTurn();
             childs.add(child);
         }
         return childs;

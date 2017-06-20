@@ -13,19 +13,19 @@ public class PathagonToken {
     public int row;
     public int col;
     public int player;
-    private boolean nullFlag;
+    public boolean isNull;
 
     public PathagonToken(int player, int row, int col) {
         this.row = row;
         this.col = col;
         this.player = player;
-        this.nullFlag = false;
+        this.isNull = false;
     }
 
     //NullMove contructor usado para representar un movimiento que no hace nada
     public PathagonToken(int player) {
         this.player = player;
-        this.nullFlag = true;
+        this.isNull = true;
     }
 
 
@@ -68,7 +68,7 @@ public class PathagonToken {
 
 
     public boolean isNull() {
-        return this.nullFlag;
+        return this.isNull;
     }
 
     //
