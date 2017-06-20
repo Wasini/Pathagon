@@ -6,7 +6,6 @@ import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import graphic.DummyView;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

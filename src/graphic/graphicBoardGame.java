@@ -1,24 +1,25 @@
 package graphic;
 
 import controller.PathagonController;
-import controller.additional.Pair;
 import java.awt.Color;
-import javax.swing.JButton;
+import java.util.List;
 import javax.swing.JOptionPane;
 import model.InvalidMoveException;
 import model.PathagonSearchProblem.PathagonState;
+import model.PathagonToken;
 
-public class graphicBoardGame implements PathagonView {
+public class graphicBoardGame extends PathagonView{
 
     private PathagonController game;
     private PathagonState currState;
 
     /**
-     * Creates new form graphicMenuGame
+     * Creates new form graphicBoardGame
+     * @param c
      */
-    public graphicBoardGame(PathagonController control) {
-        this.game = control;
-        this.currState = game.getState();
+    public graphicBoardGame(PathagonController c) {
+        super(c);
+        this.game=c;
         initComponents();
     }
     
@@ -85,7 +86,6 @@ public class graphicBoardGame implements PathagonView {
         p42 = new javax.swing.JButton();
         player = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        difficulty = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -440,412 +440,395 @@ public class graphicBoardGame implements PathagonView {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/graphic/image/Menu.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        difficulty.setText("jLabel2");
-        getContentPane().add(difficulty, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 0, -1, -1));
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void p00MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p00MouseClicked
-        ModifyBotton(p00,0,0);
+        ModifyBotton(0,0);
     }//GEN-LAST:event_p00MouseClicked
 
     private void p01MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p01MouseClicked
-        ModifyBotton(p01,1,0);
+        ModifyBotton(1,0);
     }//GEN-LAST:event_p01MouseClicked
 
     private void p02MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p02MouseClicked
-        ModifyBotton(p02,2,0);
+        ModifyBotton(2,0);
     }//GEN-LAST:event_p02MouseClicked
 
     private void p03MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p03MouseClicked
-        ModifyBotton(p03,3,0);
+        ModifyBotton(3,0);
     }//GEN-LAST:event_p03MouseClicked
 
     private void p04MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p04MouseClicked
-        ModifyBotton(p04,4,0);
+        ModifyBotton(4,0);
     }//GEN-LAST:event_p04MouseClicked
 
     private void p05MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p05MouseClicked
-        ModifyBotton(p05,5,0);
+        ModifyBotton(5,0);
     }//GEN-LAST:event_p05MouseClicked
 
     private void p06MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p06MouseClicked
-        ModifyBotton(p06,6,0);
+        ModifyBotton(6,0);
     }//GEN-LAST:event_p06MouseClicked
 
     private void p10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseClicked
-        ModifyBotton(p10,1,0);
+        ModifyBotton(1,0);
     }//GEN-LAST:event_p10MouseClicked
 
     private void p11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p11MouseClicked
-        ModifyBotton(p11,1,1);
+        ModifyBotton(1,1);
     }//GEN-LAST:event_p11MouseClicked
 
     private void p12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p12MouseClicked
-        ModifyBotton(p12,2,1);
+        ModifyBotton(2,1);
     }//GEN-LAST:event_p12MouseClicked
 
     private void p13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p13MouseClicked
-        ModifyBotton(p13,3,1);
+        ModifyBotton(3,1);
     }//GEN-LAST:event_p13MouseClicked
 
     private void p14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p14MouseClicked
-        ModifyBotton(p14,4,1);
+        ModifyBotton(4,1);
     }//GEN-LAST:event_p14MouseClicked
 
     private void p15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p15MouseClicked
-        ModifyBotton(p15,5,1);
+        ModifyBotton(5,1);
     }//GEN-LAST:event_p15MouseClicked
 
     private void p16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p16MouseClicked
-        ModifyBotton(p16,6,1);
+        ModifyBotton(6,1);
     }//GEN-LAST:event_p16MouseClicked
 
     private void p1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p1MouseClicked
-        ModifyBotton(p1,0,2);
+        ModifyBotton(0,2);
     }//GEN-LAST:event_p1MouseClicked
 
     private void p2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p2MouseClicked
-        ModifyBotton(p2,1,2);
+        ModifyBotton(1,2);
     }//GEN-LAST:event_p2MouseClicked
 
     private void p3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p3MouseClicked
-        ModifyBotton(p3,2,2);
+        ModifyBotton(2,2);
     }//GEN-LAST:event_p3MouseClicked
 
     private void p4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p4MouseClicked
-        ModifyBotton(p4,3,2);
+        ModifyBotton(3,2);
     }//GEN-LAST:event_p4MouseClicked
 
     private void p5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p5MouseClicked
-        ModifyBotton(p5,4,2);
+        ModifyBotton(4,2);
     }//GEN-LAST:event_p5MouseClicked
 
     private void p6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p6MouseClicked
-        ModifyBotton(p6,5,2);
+        ModifyBotton(5,2);
     }//GEN-LAST:event_p6MouseClicked
 
     private void p7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p7MouseClicked
-        ModifyBotton(p7,6,2);
+        ModifyBotton(6,2);
     }//GEN-LAST:event_p7MouseClicked
 
     private void p8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p8MouseClicked
-        ModifyBotton(p8,0,3);
+        ModifyBotton(0,3);
     }//GEN-LAST:event_p8MouseClicked
 
     private void p9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p9MouseClicked
-        ModifyBotton(p9,1,3);
+        ModifyBotton(1,3);
     }//GEN-LAST:event_p9MouseClicked
 
     private void p17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p17MouseClicked
-        ModifyBotton(p17,2,3);
+        ModifyBotton(2,3);
     }//GEN-LAST:event_p17MouseClicked
 
     private void p18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p18MouseClicked
-        ModifyBotton(p18,3,3);
+        ModifyBotton(3,3);
     }//GEN-LAST:event_p18MouseClicked
 
     private void p19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p19MouseClicked
-        ModifyBotton(p19,4,3);
+        ModifyBotton(4,3);
     }//GEN-LAST:event_p19MouseClicked
 
     private void p20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p20MouseClicked
-        ModifyBotton(p20,5,3);
+        ModifyBotton(5,3);
     }//GEN-LAST:event_p20MouseClicked
 
     private void p21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p21MouseClicked
-        ModifyBotton(p21,6,3);
+        ModifyBotton(6,3);
     }//GEN-LAST:event_p21MouseClicked
 
     private void p22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p22MouseClicked
-        ModifyBotton(p22,0,4);
+        ModifyBotton(0,4);
     }//GEN-LAST:event_p22MouseClicked
 
     private void p23MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p23MouseClicked
-        ModifyBotton(p23,1,4);
+        ModifyBotton(1,4);
     }//GEN-LAST:event_p23MouseClicked
 
     private void p24MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p24MouseClicked
-        ModifyBotton(p24,2,4);
+        ModifyBotton(2,4);
     }//GEN-LAST:event_p24MouseClicked
 
     private void p25MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p25MouseClicked
-        ModifyBotton(p25,3,4);
+        ModifyBotton(3,4);
     }//GEN-LAST:event_p25MouseClicked
 
     private void p26MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p26MouseClicked
-        ModifyBotton(p26,4,4);
+        ModifyBotton(4,4);
     }//GEN-LAST:event_p26MouseClicked
 
     private void p27MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p27MouseClicked
-        ModifyBotton(p27,5,4);
+        ModifyBotton(5,4);
     }//GEN-LAST:event_p27MouseClicked
 
     private void p28MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p28MouseClicked
-        ModifyBotton(p28,6,4);
+        ModifyBotton(6,4);
     }//GEN-LAST:event_p28MouseClicked
 
     private void p29MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p29MouseClicked
-        ModifyBotton(p29,0,5);
+        ModifyBotton(0,5);
     }//GEN-LAST:event_p29MouseClicked
 
     private void p30MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p30MouseClicked
-        ModifyBotton(p30,1,5);
+        ModifyBotton(1,5);
     }//GEN-LAST:event_p30MouseClicked
 
     private void p31MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p31MouseClicked
-        ModifyBotton(p31,2,5);
+        ModifyBotton(2,5);
     }//GEN-LAST:event_p31MouseClicked
 
     private void p32MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p32MouseClicked
-        ModifyBotton(p32,3,5);
+        ModifyBotton(3,5);
     }//GEN-LAST:event_p32MouseClicked
 
     private void p33MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p33MouseClicked
-        ModifyBotton(p33,4,5);
+        ModifyBotton(4,5);
     }//GEN-LAST:event_p33MouseClicked
 
     private void p34MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p34MouseClicked
-        ModifyBotton(p34,5,5);
+        ModifyBotton(5,5);
     }//GEN-LAST:event_p34MouseClicked
 
     private void p35MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p35MouseClicked
-        ModifyBotton(p35,6,5);
+        ModifyBotton(6,5);
     }//GEN-LAST:event_p35MouseClicked
 
     private void p36MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p36MouseClicked
-        ModifyBotton(p36,0,6);
+        ModifyBotton(0,6);
     }//GEN-LAST:event_p36MouseClicked
 
     private void p37MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p37MouseClicked
-        ModifyBotton(p37,1,6);
+        ModifyBotton(1,6);
     }//GEN-LAST:event_p37MouseClicked
 
     private void p38MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p38MouseClicked
-        ModifyBotton(p38,2,6);
+        ModifyBotton(2,6);
     }//GEN-LAST:event_p38MouseClicked
 
     private void p39MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p39MouseClicked
-        ModifyBotton(p39,3,6);
+        ModifyBotton(3,6);
     }//GEN-LAST:event_p39MouseClicked
 
     private void p40MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p40MouseClicked
-        ModifyBotton(p40,4,6);
+        ModifyBotton(4,6);
     }//GEN-LAST:event_p40MouseClicked
 
     private void p41MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p41MouseClicked
-        ModifyBotton(p41,5,6);
+        ModifyBotton(5,6);
     }//GEN-LAST:event_p41MouseClicked
 
     private void p42MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p42MouseClicked
-        ModifyBotton(p42,6,6);
+        ModifyBotton(6,6);
     }//GEN-LAST:event_p42MouseClicked
 
-    private void ModifyBotton(JButton b, int x, int y){
-        System.out.println("dificultad: "+difficulty.getText());
-        try {
-            String d = difficulty.getText();
-            int dif=0;
-            switch (d) {
-                case "f":
-                    dif=1;
-                    break;
-                case "m":
-                    dif=3;
-                    break;
-                case "d":
-                    dif=5;
-                    break;
-            }        
-            String p=player.getText();
-            PathagonController game = new PathagonController(p,dif);
-            boolean paint  = game.playerPlay(x,y);
-            if(paint){
-                b.setBackground(Color.GREEN);              
-                Pair m = game.iaPlay();
-                System.out.println("Ia selección: ("+m.getFirst()+","+m.getSecond()+")");
-                paintIAMove((int)m.getFirst(),(int)m.getSecond());
-            }
-        } catch (InvalidMoveException ex) {
-            JOptionPane.showConfirmDialog(null,"Movimiento invalido","Mensaje de Error",JOptionPane.ERROR_MESSAGE);
-        }    
+    private void ModifyBotton(int x, int y){
+        try{
+            game.playerPlay(x, y); 
+        }catch (InvalidMoveException e){
+            JOptionPane.showMessageDialog(null,"Movimiento invalido!","EROR",JOptionPane.ERROR_MESSAGE);
+        }catch (InterruptedException e){
+            JOptionPane.showMessageDialog(null,"Juego interrumpido!","EROR",JOptionPane.ERROR_MESSAGE);
+        }         
     }
     
-    private void paintIAMove(int x,int y){
+    private void paintMove(int x,int y,int player){
+        Color c = Color.LIGHT_GRAY;
+        if(player==-1){
+            c = Color.WHITE;
+        }else{
+            c = Color.BLACK;
+        }
         switch (x) {
             case 0:
                 switch (y) {
                     case 0:
-                        p00.setBackground(Color.BLACK);
+                        p00.setBackground(c);
                         break;
                     case 1:
-                        p10.setBackground(Color.BLACK);;
+                        p10.setBackground(c);;
                         break;
                     case 2:
-                        p1.setBackground(Color.BLACK);;
+                        p1.setBackground(c);;
                         break;
                     case 3:
-                        p8.setBackground(Color.BLACK);;
+                        p8.setBackground(c);;
                         break;
                     case 4:
-                        p22.setBackground(Color.BLACK);;
+                        p22.setBackground(c);;
                         break;
                     case 5:
-                        p29.setBackground(Color.BLACK);;
+                        p29.setBackground(c);;
                         break;
                     case 6:
-                        p36.setBackground(Color.BLACK);;
+                        p36.setBackground(c);;
                         break;
                 } 
                 break;
             case 1:
                 switch (y) {
                     case 0:
-                        p01.setBackground(Color.BLACK);
+                        p01.setBackground(c);
                         break;
                     case 1:
-                        p11.setBackground(Color.BLACK);;
+                        p11.setBackground(c);;
                         break;
                     case 2:
-                        p2.setBackground(Color.BLACK);;
+                        p2.setBackground(c);;
                         break;
                     case 3:
-                        p9.setBackground(Color.BLACK);;
+                        p9.setBackground(c);;
                         break;
                     case 4:
-                        p23.setBackground(Color.BLACK);;
+                        p23.setBackground(c);;
                         break;
                     case 5:
-                        p30.setBackground(Color.BLACK);;
+                        p30.setBackground(c);;
                         break;
                     case '6':
-                        p37.setBackground(Color.BLACK);;
+                        p37.setBackground(c);;
                         break;
                 }
                 break;
             case 2:
                 switch (y) {
                     case 0:
-                        p02.setBackground(Color.BLACK);
+                        p02.setBackground(c);
                         break;
                     case 1:
-                        p12.setBackground(Color.BLACK);;
+                        p12.setBackground(c);;
                         break;
                     case 2:
-                        p3.setBackground(Color.BLACK);;
+                        p3.setBackground(c);;
                         break;
                     case 3:
-                        p17.setBackground(Color.BLACK);;
+                        p17.setBackground(c);;
                         break;
                     case 4:
-                        p24.setBackground(Color.BLACK);;
+                        p24.setBackground(c);;
                         break;
                     case 5:
-                        p31.setBackground(Color.BLACK);;
+                        p31.setBackground(c);;
                         break;
                     case 6:
-                        p38.setBackground(Color.BLACK);;
+                        p38.setBackground(c);;
                         break;
                 }
                 break;
             case 3:
                 switch (y) {
                     case 0:
-                        p03.setBackground(Color.BLACK);
+                        p03.setBackground(c);
                         break;
                     case 1:
-                        p13.setBackground(Color.BLACK);;
+                        p13.setBackground(c);;
                         break;
                     case 2:
-                        p4.setBackground(Color.BLACK);;
+                        p4.setBackground(c);;
                         break;
                     case 3:
-                        p18.setBackground(Color.BLACK);;
+                        p18.setBackground(c);;
                         break;
                     case 4:
-                        p25.setBackground(Color.BLACK);;
+                        p25.setBackground(c);;
                         break;
                     case 5:
-                        p32.setBackground(Color.BLACK);;
+                        p32.setBackground(c);;
                         break;
                     case 6:
-                        p39.setBackground(Color.BLACK);;
+                        p39.setBackground(c);;
                         break;
                 }
                 break;
             case 4:
                 switch (y) {
                     case 0:
-                        p04.setBackground(Color.BLACK);
+                        p04.setBackground(c);
                         break;
                     case 1:
-                        p14.setBackground(Color.BLACK);;
+                        p14.setBackground(c);;
                         break;
                     case 2:
-                        p5.setBackground(Color.BLACK);;
+                        p5.setBackground(c);;
                         break;
                     case 3:
-                        p19.setBackground(Color.BLACK);;
+                        p19.setBackground(c);;
                         break;
                     case 4:
-                        p26.setBackground(Color.BLACK);;
+                        p26.setBackground(c);;
                         break;
                     case 5:
-                        p33.setBackground(Color.BLACK);;
+                        p33.setBackground(c);;
                         break;
                     case 6:
-                        p40.setBackground(Color.BLACK);;
+                        p40.setBackground(c);;
                         break;
                 }
                 break;
             case 5:
                 switch (y) {
                     case 0:
-                        p05.setBackground(Color.BLACK);
+                        p05.setBackground(c);
                         break;
                     case 1:
-                        p15.setBackground(Color.BLACK);;
+                        p15.setBackground(c);;
                         break;
                     case 2:
-                        p6.setBackground(Color.BLACK);;
+                        p6.setBackground(c);;
                         break;
                     case 3:
-                        p20.setBackground(Color.BLACK);;
+                        p20.setBackground(c);;
                         break;
                     case 4:
-                        p27.setBackground(Color.BLACK);;
+                        p27.setBackground(c);;
                         break;
                     case 5:
-                        p34.setBackground(Color.BLACK);;
+                        p34.setBackground(c);;
                         break;
                     case 6:
-                        p41.setBackground(Color.BLACK);;
+                        p41.setBackground(c);;
                         break;
                 }
                 break;
             case 6:
                 switch (y) {
                     case 0:
-                        p06.setBackground(Color.BLACK);
+                        p06.setBackground(c);
                         break;
                     case 1:
-                        p16.setBackground(Color.BLACK);;
+                        p16.setBackground(c);;
                         break;
                     case 2:
-                        p7.setBackground(Color.BLACK);;
+                        p7.setBackground(c);;
                         break;
                     case 3:
-                        p21.setBackground(Color.BLACK);;
+                        p21.setBackground(c);;
                         break;
                     case 4:
-                        p28.setBackground(Color.BLACK);;
+                        p28.setBackground(c);;
                         break;
                     case 5:
-                        p35.setBackground(Color.BLACK);;
+                        p35.setBackground(c);;
                         break;
                     case 6:
-                        p42.setBackground(Color.BLACK);;
+                        p42.setBackground(c);;
                         break;
                 }
             break;
@@ -853,7 +836,6 @@ public class graphicBoardGame implements PathagonView {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JLabel difficulty;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton p00;
     private javax.swing.JButton p01;
@@ -905,57 +887,40 @@ public class graphicBoardGame implements PathagonView {
     private javax.swing.JButton p8;
     private javax.swing.JButton p9;
     public javax.swing.JLabel player;
+    // End of variables declaration//GEN-END:variables
 
-
-
-
-    //TODO Implementar metodos para el control de la vista
-
-
-    /**
-     * Actualiza la vista con el nuevo estado del juego
-     */
     @Override
     public void updateView() {
-
+        System.out.println("NUNCA ENTRA");
+        PathagonToken ultimoMovimiento = this.gameState.getLastMove();
+            if (this.gameState.hasBlockedMoves()) {
+                List<PathagonToken> fichasComidas = this.gameState.getBlockedMoves();
+            for (PathagonToken removido : fichasComidas) {
+                paintMove(removido.row,removido.col,0);
+            }
+            paintMove(ultimoMovimiento.row,ultimoMovimiento.col, ultimoMovimiento.player);
+        }
     }
 
-
-    /**
-     * Alerta al jugador que el juego resulto en empate
-     */
     @Override
     public void alertDraw() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-    /**
-     * Alerta al jugador de un movimiento invalido
-     */
     @Override
     public void alertInvalidMove() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * Alerta al jugador que el @player gano el juego
-     * @param player
-     */
     @Override
     public void alertWinner(String player) {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-    /**
-     * Alerta al jugador que se esta intenado realizar un movimiento fuera de su turno
-     */
     @Override
     public void alertInvalidTurn() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    // End of variables declaration//GEN-END:variables
 
 
 

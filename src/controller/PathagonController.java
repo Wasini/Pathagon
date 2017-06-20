@@ -1,6 +1,5 @@
 package controller;
 
-import controller.additional.Pair;
 import model.InvalidMoveException;
 import model.PathagonSearchProblem.MinMaxAlphaBetaEngine;
 import model.PathagonSearchProblem.PathagonSearchProblem;
@@ -8,7 +7,6 @@ import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 import graphic.PathagonView;
 
-import java.util.concurrent.TimeUnit;
 
 /*
 Clase que representa un juego de Pathagon donde el jugador 2 es una IA
@@ -20,17 +18,13 @@ public class PathagonController {
     private String player2;
     private int turnNumber;
 
-    private PathagonState currState; //Estado del juego
+    public PathagonState currState; //Estado del juego
     private PathagonSearchProblem<PathagonState> problem; //Problema de busqueda para el juego Pathagon
     private MinMaxAlphaBetaEngine<PathagonSearchProblem<PathagonState>,PathagonState> ia;
     private PathagonView view;
 
 
-    public PathagonController(){
-
-    }
-
-    public void newGame(String player,int difficulty) {
+    public PathagonController(String player,int difficulty) {
         this.currState = new PathagonState();
         this.problem = new PathagonSearchProblem<>(currState);
         this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
@@ -85,17 +79,17 @@ public class PathagonController {
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
+                System.out.println("ACA SE DA EL ERROR");                
                 view.updateView();
                 return true;
         } else {
-
             view.alertInvalidMove();
             throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
         }
     }
 
 
-    public Pair iaPlay() throws InvalidMoveException{
+    public void iaPlay() throws InvalidMoveException{
         if(!this.currState.isMax()) {
             throw new InvalidMoveException("No es el turno de la maquina");
         }
@@ -104,9 +98,7 @@ public class PathagonController {
             this.changeTurn();
         } else{
             this.mkMove(iaMove.row,iaMove.col);
-            return new Pair(iaMove.row,iaMove.col);
         }
-        return new Pair (-1,-1);
     }
 
 
@@ -119,7 +111,7 @@ public class PathagonController {
      * @throws InvalidMoveException
      * @throws InterruptedException
      */
-    public boolean playerPlay(int row,int col) throws InvalidMoveException, InterruptedException {
+    public void playerPlay(int row,int col) throws InvalidMoveException, InterruptedException {
         if (this.currState.isMax()) {
             view.alertInvalidTurn();
             throw new InvalidMoveException("No es el turno de "+this.getPlayer1());
@@ -127,10 +119,7 @@ public class PathagonController {
             if (mkMove(row,col)) {
                 Thread.sleep(1300);
                 iaPlay();
-                return true;
-
-            } else
-                return false;
+            }
         }
     }
 

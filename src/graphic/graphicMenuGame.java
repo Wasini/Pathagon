@@ -1,11 +1,12 @@
 package graphic;
 
+import controller.PathagonController;
 import javax.swing.JOptionPane;
 
 public class graphicMenuGame extends javax.swing.JFrame {
 
     /**
-     * Creates new form graphicBoard
+     * Creates new form menuBoard
      */
     public graphicMenuGame() {
         initComponents();
@@ -64,23 +65,26 @@ public class graphicMenuGame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void playGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_playGameMouseClicked
-        graphicBoardGame game=new graphicBoardGame();        
+        int dif=0;
         if(level.getSelectedIndex()==0){
-            game.difficulty.setText("f");
+            dif=1;
         }else{
             if(level.getSelectedIndex()==1){
-               game.difficulty.setText("m"); 
+               dif=3; 
             }else{
-                game.difficulty.setText("f");
+                dif=5;
             }
-        }        
+        }
+        String player ="";
         if(name.getText().isEmpty()){
             JOptionPane.showMessageDialog(null,"No ingreso nombre del Jugador: 'Player1' es su nombre","Mensaje de Advertencia",JOptionPane.ERROR_MESSAGE);
-            game.player.setText("Player1");           
+            player="Player1";           
         }else{
-            game.player.setText(name.getText()); 
-        }       
-        game.setVisible(true);
+            player=name.getText(); 
+        }
+        PathagonController c=new PathagonController(player,dif);
+        graphicBoardGame view = new graphicBoardGame(c);
+        view.setVisible(true);
         dispose();
     }//GEN-LAST:event_playGameMouseClicked
 
