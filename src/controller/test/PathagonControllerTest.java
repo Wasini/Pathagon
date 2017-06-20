@@ -19,8 +19,7 @@ class PathagonControllerTest {
 
     @BeforeEach
     void setUp() {
-        myGame = new PathagonController();
-        myGame.newGame("Tester",1);
+        myGame = new PathagonController("Tester",1);
        // myGame.setView(new DummyView(myGame));
     }
 
