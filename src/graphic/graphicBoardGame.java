@@ -3,6 +3,8 @@ package graphic;
 import controller.PathagonController;
 import java.awt.Color;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.InvalidMoveException;
 import model.PathagonSearchProblem.PathagonState;
@@ -640,19 +642,13 @@ public class graphicBoardGame extends PathagonView{
     }//GEN-LAST:event_p42MouseClicked
 
     private void ModifyBotton(int x, int y){
-        try{
-            game.playerPlay(x, y); 
-        }catch (InvalidMoveException e){
-            JOptionPane.showMessageDialog(null,"Movimiento invalido!","EROR",JOptionPane.ERROR_MESSAGE);
-        }catch (InterruptedException e){
-            JOptionPane.showMessageDialog(null,"Juego interrumpido!","EROR",JOptionPane.ERROR_MESSAGE);
-        }         
+        game.playerPlay(x, y);          
     }
     
     private void paintMove(int x,int y,int player){
         Color c;                      
         if(player==-1){
-            c = Color.WHITE;
+            c = Color.YELLOW;
         }else{
             if(player==1){
                 c=Color.BLACK;
@@ -706,7 +702,7 @@ public class graphicBoardGame extends PathagonView{
                     case 5:
                         p30.setBackground(c);;
                         break;
-                    case '6':
+                    case 6:
                         p37.setBackground(c);;
                         break;
                 }
@@ -896,14 +892,17 @@ public class graphicBoardGame extends PathagonView{
     @Override
     public void updateView() {
         PathagonToken ultimoMovimiento = this.gameState.getLastMove();
-        System.out.println("Blockeado = "+this.gameState.hasBlockedMoves());
         if (this.gameState.hasBlockedMoves()) {
             List<PathagonToken> fichasComidas = this.gameState.getBlockedMoves();
             for (PathagonToken removido : fichasComidas) {
-                System.out.println("Remover: ("+removido.row+","+removido.col+")");
                 paintMove(removido.row,removido.col,0);
             }
             
+        }
+        if((this.gameState.getPlayerTokenAmount(ultimoMovimiento.player)>14) && 
+                (this.gameState.getPlayerTokenAmount(ultimoMovimiento.player * (-1))>14)){
+            JOptionPane.showMessageDialog(null,"Los jugadores no pueden realizar mas movimientos","Juego terminado",JOptionPane.WARNING_MESSAGE);
+            dispose();
         }
         paintMove(ultimoMovimiento.row,ultimoMovimiento.col, ultimoMovimiento.player);
     }
@@ -915,7 +914,10 @@ public class graphicBoardGame extends PathagonView{
 
     @Override
     public void alertInvalidMove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JOptionPane.showMessageDialog(null,"Movimiento invalido!!","Advertencia",JOptionPane.WARNING_MESSAGE);            
+        
+        //No se que va aca....
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -925,7 +927,24 @@ public class graphicBoardGame extends PathagonView{
 
     @Override
     public void alertInvalidTurn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Si juega la ia se avisa que no es turno al player, sino se regresa para que elija que hacer
+        //en el caso de que la ia juegue sus 14 fichas y al player1 le queden aun por jugar
+        if(this.gameState.getCurrentPlayer()==1){
+            JOptionPane.showMessageDialog(null,"No es su turno!","Aviso:",JOptionPane.WARNING_MESSAGE);
+        }else{
+            return;
+        }
+        PathagonToken mov = this.gameState.getLastMove();
+        //si el jugador contrario no tiene 14 fichas jugadas todavia juega el otro
+        while(this.gameState.getPlayerTokenAmount(this.gameState.getCurrentPlayer()*-1)==14){
+            game.iaPlay();
+            game.currState.changeTurn(); //para que siga la ia
+            if(this.gameState.getPlayerTokenAmount(1)==14){
+                JOptionPane.showMessageDialog(null,"Los jugadores no pueden realizar mas movimientos","Juego terminado",JOptionPane.WARNING_MESSAGE);
+                dispose();
+                break;
+            }
+        }
     }
 
 

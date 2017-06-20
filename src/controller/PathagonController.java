@@ -6,6 +6,7 @@ import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 import graphic.PathagonView;
+import javax.swing.JOptionPane;
 
 
 /*
@@ -70,7 +71,7 @@ public class PathagonController {
     //
     //POST: se modifica el estado del juego al realizar el movimiento
 
-    public boolean mkMove(int row,int col) throws InvalidMoveException {
+    public boolean mkMove(int row,int col) {
         PathagonToken mv = new PathagonToken(this.getTurn(),row,col);
         if (!canPlay()) {
             changeTurn();
@@ -83,14 +84,15 @@ public class PathagonController {
                 return true;
         } else {
             view.alertInvalidMove();
-            throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
+            return false;
         }
     }
 
 
-    public void iaPlay() throws InvalidMoveException{
+    public void iaPlay() {
         if(!this.currState.isMax()) {
-            throw new InvalidMoveException("No es el turno de la maquina");
+            JOptionPane.showMessageDialog(null,"No es el turno de la maquina","Aviso:",JOptionPane.WARNING_MESSAGE);
+            return;
         }
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
         if(iaMove.isNull()){
@@ -110,13 +112,14 @@ public class PathagonController {
      * @throws InvalidMoveException
      * @throws InterruptedException
      */
-    public void playerPlay(int row,int col) throws InvalidMoveException, InterruptedException {
+    public void playerPlay(int row,int col){
         if (this.currState.isMax()) {
             view.alertInvalidTurn();
-            throw new InvalidMoveException("No es el turno de "+this.getPlayer1());
+            //JOptionPane.showMessageDialog(null,"No es el turno de "+this.getPlayer1(),"Aviso:",JOptionPane.WARNING_MESSAGE);
+            return;
         } else {
             if (mkMove(row,col)) {
-                Thread.sleep(1300);
+                //Thread.sleep(1300);
                 iaPlay();
             }
         }
