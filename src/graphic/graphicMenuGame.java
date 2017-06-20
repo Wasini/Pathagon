@@ -82,8 +82,9 @@ public class graphicMenuGame extends javax.swing.JFrame {
         }else{
             player=name.getText(); 
         }
-        PathagonController c=new PathagonController(player,dif);
+        PathagonController c=new PathagonController(player,dif);        
         graphicBoardGame view = new graphicBoardGame(c);
+        view.player.setText(player);
         c.setView(view);
         view.setVisible(true);
         dispose();

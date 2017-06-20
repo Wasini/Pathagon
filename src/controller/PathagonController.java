@@ -7,6 +7,7 @@ import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 import graphic.PathagonView;
 
+
 /*
 Clase que representa un juego de Pathagon donde el jugador 2 es una IA
 TODO:
@@ -64,10 +65,6 @@ public class PathagonController {
 
     public PathagonView getView(){return this.view; };
 
-    public int getValue() {
-      return this.problem.value(currState);
-    };
-
 
 
     //
@@ -82,11 +79,9 @@ public class PathagonController {
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
                 this.turnNumber++;
-                System.out.println("ACA SE DA EL ERROR");
                 view.updateView();
                 return true;
         } else {
-
             view.alertInvalidMove();
             throw new InvalidMoveException("Movimiento no valido! "+mv.toString());
         }
