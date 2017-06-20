@@ -472,7 +472,7 @@ public class graphicBoardGame extends PathagonView{
     }//GEN-LAST:event_p06MouseClicked
 
     private void p10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p10MouseClicked
-        ModifyBotton(1,0);
+        ModifyBotton(0,1);
     }//GEN-LAST:event_p10MouseClicked
 
     private void p11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p11MouseClicked
@@ -650,11 +650,15 @@ public class graphicBoardGame extends PathagonView{
     }
     
     private void paintMove(int x,int y,int player){
-        Color c = Color.LIGHT_GRAY;
+        Color c;                      
         if(player==-1){
             c = Color.WHITE;
         }else{
-            c = Color.BLACK;
+            if(player==1){
+                c=Color.BLACK;
+            }else{ 
+                c = Color.LIGHT_GRAY;
+            }
         }
         switch (x) {
             case 0:
@@ -891,15 +895,17 @@ public class graphicBoardGame extends PathagonView{
 
     @Override
     public void updateView() {
-        System.out.println("NUNCA ENTRA");
         PathagonToken ultimoMovimiento = this.gameState.getLastMove();
-            if (this.gameState.hasBlockedMoves()) {
-                List<PathagonToken> fichasComidas = this.gameState.getBlockedMoves();
+        System.out.println("Blockeado = "+this.gameState.hasBlockedMoves());
+        if (this.gameState.hasBlockedMoves()) {
+            List<PathagonToken> fichasComidas = this.gameState.getBlockedMoves();
             for (PathagonToken removido : fichasComidas) {
+                System.out.println("Remover: ("+removido.row+","+removido.col+")");
                 paintMove(removido.row,removido.col,0);
             }
-            paintMove(ultimoMovimiento.row,ultimoMovimiento.col, ultimoMovimiento.player);
+            
         }
+        paintMove(ultimoMovimiento.row,ultimoMovimiento.col, ultimoMovimiento.player);
     }
 
     @Override

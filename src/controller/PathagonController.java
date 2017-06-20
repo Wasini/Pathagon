@@ -78,8 +78,7 @@ public class PathagonController {
         }
         if (problem.validMove(this.currState,mv)) {
                 problem.applyMove(this.currState,mv);
-                this.turnNumber++;
-                System.out.println("ACA SE DA EL ERROR");                
+                this.turnNumber++;               
                 view.updateView();
                 return true;
         } else {
