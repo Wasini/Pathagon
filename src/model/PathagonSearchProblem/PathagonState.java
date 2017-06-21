@@ -2,15 +2,9 @@ package model.PathagonSearchProblem;
 import framework.AdversarySearchState;
 import model.PathagonBoard;
 import model.PathagonToken;
-
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 
-/**
- * Created by grazi on 13/06/17.
- */
 public class PathagonState implements AdversarySearchState {
 
     public final int PLAYER_MAX_TOKENS = 14;
@@ -131,7 +125,7 @@ public class PathagonState implements AdversarySearchState {
     }
 
     public boolean hasBlockedMoves() {
-        return this.blockedMoves.size() != 0;
+        return !this.blockedMoves.isEmpty();
     }
 
     public boolean moveIsBlocked(PathagonToken mv) {
@@ -204,9 +198,7 @@ public class PathagonState implements AdversarySearchState {
     public boolean positionIsAvaible(int row,int col) {
         if (this.board.getToken(row,col) != this.board.EMPTY_CELL)
             return false;
-        if (this.hasBlockedMoves() && moveIsBlocked(row,col))
-            return false;
-        return true;
+        return !(this.hasBlockedMoves() && moveIsBlocked(row,col));
     }
 
 

@@ -1,12 +1,6 @@
 package model;
 
 /**
- * Created by grazi on 13/06/17.
- */
-
-import java.util.Comparator;
-
-/**
  * Clase que representa una ficha negra o blanca de pathagon en una posicion del tablero
  */
 public class PathagonToken {

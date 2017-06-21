@@ -1,6 +1,5 @@
 package model;
 
-
 import java.util.*;
 
 /**
@@ -27,8 +26,7 @@ public class PathagonPath extends TreeSet<PathagonToken> {
         super(p.comparator());
         this.PLAYER = p.PLAYER();
         this.extensionComparator = p.extensionComparator();
-        for (PathagonToken tk: p
-             ) {
+        for (PathagonToken tk: p) {
             this.add(tk);
         }
     }

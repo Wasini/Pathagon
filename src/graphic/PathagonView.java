@@ -3,8 +3,6 @@ package graphic;
 import controller.PathagonController;
 import model.PathagonSearchProblem.PathagonState;
 
-import javax.swing.*;
-
 /**
  * Created by grazi on 18/06/17.
  */

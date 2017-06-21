@@ -41,8 +41,4 @@ class PathagonBoardTest {
 
     }
 
-    @Test
-    void equals() {
-    }
-
 }

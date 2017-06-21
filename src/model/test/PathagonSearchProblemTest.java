@@ -13,9 +13,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Created by grazi on 15/06/17.
- */
+
 class PathagonSearchProblemTest {
 
     private PathagonSearchProblem<PathagonState> p;
@@ -29,11 +27,6 @@ class PathagonSearchProblemTest {
 
     }
 
-
-
-    @Test
-    void getSuccessors() {
-    }
 
     @Test
     void end() {
@@ -176,10 +169,6 @@ class PathagonSearchProblemTest {
         List<PathagonToken> moves = p.getAvaibleMoves(currState);
         assertTrue(moves.size() == 47);
         assertTrue(moves.stream().noneMatch(mv -> (mv.col == 3 && mv.row ==2) || (mv.col == 3 && mv.row == 2)));
-    }
-
-    @Test
-    void applyMove() {
     }
 
 

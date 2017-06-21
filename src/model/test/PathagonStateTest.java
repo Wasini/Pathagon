@@ -8,9 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Created by grazi on 15/06/17.
- */
 class PathagonStateTest {
 
     PathagonState st;
@@ -69,10 +66,6 @@ class PathagonStateTest {
         assertTrue(tokenAmountForPlayer -1 == st.getPlayerTokenAmount(ownerOfToken),"La ficha se removio de la lista del jugador");
         assertTrue(board.getToken(5,1) == board.EMPTY_CELL,"Se removio la ficha en el tablero");
 
-    }
-
-    @Test
-    void ruleApplied() {
     }
 
 }

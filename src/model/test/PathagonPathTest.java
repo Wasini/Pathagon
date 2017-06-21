@@ -8,9 +8,7 @@ import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Created by grazi on 17/06/17.
- */
+
 class PathagonPathTest {
 
     private PathagonPath path;
@@ -50,14 +48,6 @@ class PathagonPathTest {
         assertTrue(path2.extension()==1);
 
 
-    }
-
-    @Test
-    void pathHead() {
-    }
-
-    @Test
-    void pathEnd() {
     }
 
 }

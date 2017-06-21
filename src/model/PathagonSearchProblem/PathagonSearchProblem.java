@@ -8,9 +8,6 @@ import model.PathagonToken;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Created by grazi on 13/06/17.
- */
 public class PathagonSearchProblem<P> implements AdversarySearchProblem<PathagonState> {
 
     protected PathagonState initial;
@@ -149,8 +146,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         if (!mv.isNull()) {
             List<PathagonToken> posibleEated = tokensEatedBy(st,mv);
             if(!posibleEated.isEmpty()) {
-                for (PathagonToken tk : posibleEated
-                        ) {
+                for (PathagonToken tk : posibleEated) {
                     st.eatToken(tk);
                 }
             }
@@ -175,9 +171,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
            return false;
        if (st.playerTokensLeft(playerMoving)<=0)
            return false;
-       if (!st.positionIsAvaible(mv.row,mv.col))
-           return false;
-       return true;
+       return st.positionIsAvaible(mv.row,mv.col);
     }
 
 
@@ -212,7 +206,6 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         }
         this.p1LongestPath = p1Paths.isEmpty() ? 0 : p1Paths.stream().max((a,b) -> a.extension() - b.extension()).get().extension();
         this.p2LongestPath = p2Paths.isEmpty() ? 0 : p2Paths.stream().max((a,b) -> a.extension() - b.extension()).get().extension();
-        return;
     }
     /**
      * Dada una ficha y un tablero se genera el camino que contiene todas las fichas

@@ -38,7 +38,7 @@ public class graphicMenuGame extends javax.swing.JFrame {
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 320, -1, 20));
 
         name.setText("Player1");
-        getContentPane().add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 280, 240, 20));
+        getContentPane().add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 280, 240, 30));
 
         jLabel2.setBackground(new java.awt.Color(51, 51, 51));
         jLabel2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -84,7 +84,6 @@ public class graphicMenuGame extends javax.swing.JFrame {
         }
         PathagonController c=new PathagonController(player,dif);        
         graphicBoardGame view = new graphicBoardGame(c);
-        System.out.println("PLAYER = "+ player);
         view.player.setText(player);
         c.setView(view);
         view.setVisible(true);

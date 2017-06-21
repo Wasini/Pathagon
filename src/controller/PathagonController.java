@@ -1,6 +1,5 @@
 package controller;
 
-import model.InvalidMoveException;
 import model.PathagonSearchProblem.MinMaxAlphaBetaEngine;
 import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
@@ -112,6 +111,7 @@ public class PathagonController {
 
     /**
      * Dice si el jugador dado puede jugar (es su turno y le quedan fichas)
+     * @param PLAYER (int)
      * @return true si a player le quedna fichas y es su turno
      */
     public boolean canPlay(int PLAYER) {
@@ -141,6 +141,7 @@ public class PathagonController {
 
     /**Pre el juego termino
      * Retorna -1 si gano player1, 1 si gano player2 o 0 si es un empate
+     * @return 0 si empataron, -1 si gano PLAYER1, 1 si gano PLAYER2
      */
     public int getGameResult() {
         int tokensLeft = currState.playerTokensLeft(currState.PLAYER1) + currState.playerTokensLeft(currState.PLAYER2);

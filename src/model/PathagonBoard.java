@@ -76,7 +76,7 @@ public class PathagonBoard {
 
     /**
      *
-     * @param mv
+     * @param mv (PathagonToken)
      * @return
      */
     public PathagonToken removeToken(PathagonToken mv){

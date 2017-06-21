@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import model.PathagonToken;
 import org.junit.jupiter.api.Test;
 
-/**
- * Created by grazi on 15/06/17.
- */
 
 class PathagonTokenTest {
     @Test

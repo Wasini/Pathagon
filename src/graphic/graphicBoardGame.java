@@ -4,7 +4,6 @@ import controller.PathagonController;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.JOptionPane;
-import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 
 public class graphicBoardGame extends PathagonView{

@@ -54,13 +54,4 @@ public class MinMaxAlphaBetaEngineTest {
         //ia.report();
 
     }
-
-    @Test
-    public void computeSuccessor1() throws Exception {
-    }
-
-    @Test
-    public void computeSuccessor() throws Exception {
-    }
-
 }
