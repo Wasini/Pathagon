@@ -28,6 +28,16 @@ public class PathagonToken {
         this.isNull = true;
     }
 
+    public PathagonToken(PathagonToken tk1) {
+        if (!tk1.isNull()){
+            this.row = tk1.row;
+            this.col = tk1.col;
+            this.isNull = false;
+        } else
+            this.isNull = true;
+        this.player = tk1.player;
+    }
+
 
     /**
      * Compara esta ficha con otra y evalua si esta en una casilla adyacente sin considerar las diagonales
@@ -79,6 +89,29 @@ public class PathagonToken {
             return (this.row == other.row && this.col == other.col);
         }
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof PathagonToken)) {
+            return false;
+        }
+
+        PathagonToken c = (PathagonToken) o;
+
+        if (this.isNull()) {
+            return c.isNull() && this.player == c.player;
+        } else {
+            return (this.col == c.col && this.row == c.row && this.player == c.player);
+        }
+    }
+
+
 
     public boolean belongsTo(int player) {
         return (this.player > 0 == player > 0);

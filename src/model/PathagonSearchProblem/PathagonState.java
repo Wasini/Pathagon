@@ -3,7 +3,6 @@ import framework.AdversarySearchState;
 import model.PathagonBoard;
 import model.PathagonToken;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.function.Predicate;
  */
 public class PathagonState implements AdversarySearchState {
 
-    public final int MAX_TOKENS = 14;
+    public final int PLAYER_MAX_TOKENS = 14;
     public final int PLAYER1 = -1;
     public final int PLAYER2 = 1;
     public final int BOARDSIZE = 7;
@@ -22,8 +21,6 @@ public class PathagonState implements AdversarySearchState {
     private PathagonBoard board;
     private List<PathagonToken> p1Tokens;
     private List<PathagonToken> p2Tokens;
-    private int player1TokenAmount;
-    private int player2TokenAmount;
     private List<PathagonToken> blockedMoves;
     private PathagonToken lastMove;
 
@@ -33,21 +30,22 @@ public class PathagonState implements AdversarySearchState {
         this.blockedMoves = new LinkedList<>();
         this.p1Tokens = new LinkedList<>();
         this.p2Tokens = new LinkedList<>();
-        this.player1TokenAmount = 0;
-        this.player2TokenAmount = 0;
+
         this.turn = -1;
     }
 
     //Copy constructor
-    //CUIDADO: Los tokens son copiados por referencia!
+    //Tokens copiados por referncia
     public PathagonState(PathagonState another) {
         this.turn = another.getTurn();
         this.board = new PathagonBoard(another.board);
-        this.player1TokenAmount = another.getPlayerTokenAmount(PLAYER1);
-        this.player2TokenAmount = another.getPlayerTokenAmount(PLAYER2);
-        this.p1Tokens = new LinkedList<> (another.getPlayerTokens(PLAYER1));
-        this.p2Tokens = new LinkedList<> (another.getPlayerTokens(PLAYER2));
-        this.blockedMoves = another.getBlockedMoves();
+        this.p1Tokens = new LinkedList<>();
+        this.p2Tokens = new LinkedList<>();
+        this.blockedMoves = new LinkedList<>();
+        for ( PathagonToken tk1 : another.getPlayerTokens(PLAYER1)) p1Tokens.add(tk1);
+        for ( PathagonToken tk2 : another.getPlayerTokens(PLAYER2)) p2Tokens.add(tk2);
+        if (another.hasBlockedMoves())
+            for ( PathagonToken blocked : another.getBlockedMoves()) this.blockedMoves.add(blocked);
         this.lastMove = another.getLastMove();
     }
 
@@ -83,6 +81,7 @@ public class PathagonState implements AdversarySearchState {
 
     public void setLastMove(PathagonToken lastMove) {
         this.lastMove = lastMove;
+
     }
 
     public PathagonBoard getBoard() {
@@ -90,7 +89,7 @@ public class PathagonState implements AdversarySearchState {
     }
 
     public int getPlayerTokenAmount(int player) {
-        return player == PLAYER1 ? this.player1TokenAmount : this.player2TokenAmount;
+        return player == PLAYER1 ? this.p1Tokens.size() : this.p1Tokens.size();
     }
 
     public List<PathagonToken> getPlayerTokens(int player) {
@@ -114,10 +113,11 @@ public class PathagonState implements AdversarySearchState {
             return false;
         if (this.turn != otherState.getTurn())
             return false;
-        if(this.hasBlockedMoves() && otherState.hasBlockedMoves()){
-            if (!this.blockedMoves.equals(otherState.getBlockedMoves()))
+        if(this.hasBlockedMoves()){
+            if ( !this.blockedMoves.equals(otherState.getBlockedMoves()))
                 return false;
         }
+
         if(!this.isInitial() && !otherState.isInitial()) {
             if (!this.lastMove.equals(otherState.getLastMove()))
                 return false;
@@ -138,7 +138,9 @@ public class PathagonState implements AdversarySearchState {
         return this.blockedMoves.stream().anyMatch(m -> (m.overlaps(mv)));
     }
 
+    //Esta la posicion (row,col) del tablero bloqueada?
     public boolean moveIsBlocked(int row,int col) {
+
         return this.blockedMoves.stream().anyMatch(m-> m.row == row && m.col == col);
     }
 
@@ -146,42 +148,48 @@ public class PathagonState implements AdversarySearchState {
         return this.lastMove == null;
     }
 
+
+    //Cantida de fichas disponibles para el jugador
     public int playerTokensLeft(int player) {
-       return MAX_TOKENS - (player > 0 ? this.player2TokenAmount : this.player1TokenAmount);
+       return PLAYER_MAX_TOKENS - (player == PLAYER1 ? this.p1Tokens.size() : this.p2Tokens.size());
     }
 
 
-    /**
-     * Cambia el turno del juego, si el jugador cambio de turno por que no le quedaron fichas
-     * se agrega el movimiento nulo de ese jugador a la ultima jugada
-     */
     public void changeTurn(){
         this.turn *= -1;
     }
 
 
+    /**
+     * Agrega la ficha al tablero y a la lista dle jugador correspondiente
+     * si se quiere agerga runa ficha nula solo se la agrega como ultimo movimiento
+     * @param tk
+     */
 
+    public void addToken(PathagonToken tk) {
 
-    public void addMove(PathagonToken mv) {
-
-        if (!mv.isNull()){
-            if (mv.player > 0) {
-                this.player2TokenAmount++;
-                this.p2Tokens.add(mv);
+        if (!tk.isNull()){
+            if (tk.player > 0) {
+                this.p2Tokens.add(tk);
             } else {
-                this.player1TokenAmount++;
-                this.p1Tokens.add(mv);
+                this.p1Tokens.add(tk);
             }
-            this.board.addToken(mv);
-            this.lastMove = mv;
+            this.board.addToken(tk);
+            this.lastMove = tk;
             this.lastMove.isNull = false;
         } else {
-            this.lastMove = mv;
+            this.lastMove = tk;
         }
 
     }
 
 
+    /**
+     * Dice si la Posicion (row,col) del tablero esta disponible
+     * @param row
+     * @param col
+     * @return
+     */
     public boolean positionIsAvaible(int row,int col) {
         if (this.board.getToken(row,col) != this.board.EMPTY_CELL)
             return false;
@@ -202,30 +210,10 @@ public class PathagonState implements AdversarySearchState {
         if (removedToken != null) {
             blockedMoves.add(removedToken);
             if (removedToken.player == PLAYER1)
-                this.player1TokenAmount--;
+                p1Tokens.remove(removedToken);
             else
-                this.player2TokenAmount--;
+                p2Tokens.remove(removedToken);
         }
-    }
-
-
-    /**
-     * Metodo auxiliar para encontrar un elemento que cumpla el predicado test en una lista
-     * removerlo y retornalo
-     * si no lo encuentra retorna null
-     * @param collection La lista a buscar el elemento
-     * @param test predicado que debe cumplir el elemento de la lista
-     * @param <T> Tipo de elemento de la lista
-     * @return El elemento que cumple el predicado test en la lista o null si no es encontrado
-     */
-    private static <T> T findAndRemoveFirst(Iterable<? extends T> collection, Predicate<? super T> test) {
-        T value = null;
-        for (Iterator<? extends T> it = collection.iterator(); it.hasNext();)
-            if (test.test(value = it.next())) {
-                it.remove();
-                return value;
-            }
-        return null;
     }
 
 

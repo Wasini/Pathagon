@@ -23,7 +23,12 @@ class PathagonPathTest {
         path.add(new PathagonToken(-1,1,0));
         path.add(new PathagonToken(-1,1,1));
         path.add(new PathagonToken(-1,2,1));
-        assertTrue(path.size() == 4);
+        path.add(new PathagonToken(-1,3,1));
+        path.add(new PathagonToken(-1,3,2));
+        path.add(new PathagonToken(-1,4,2));
+        path.add(new PathagonToken(-1,4,1));
+
+        assertTrue(path.size() == 8);
     }
 
     @Test

@@ -72,7 +72,7 @@ public class graphicMenuGame extends javax.swing.JFrame {
             if(level.getSelectedIndex()==1){
                dif=3; 
             }else{
-                dif=5;
+                dif=4;
             }
         }
         String player ="";

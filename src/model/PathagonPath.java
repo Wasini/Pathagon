@@ -50,7 +50,7 @@ public class PathagonPath extends TreeSet<PathagonToken> {
      * @return Entero que representa cantidad de casilleros que ocupa el camino en filas o columnas respectivamente
      */
     public int extension() {
-        return (this.PLAYER > 0 ? this.last().col - this.first().col : this.last().row - this.first().row) + 1;
+        return (this.PLAYER > 0 ? (this.last().col - this.first().col +1) : (this.last().row - this.first().row) +1);
     }
 
 
@@ -59,20 +59,6 @@ public class PathagonPath extends TreeSet<PathagonToken> {
         return this.extensionComparator;
     }
 
-
-
-    /**
-     * Retorna el elemento del conjunto que por lo menos es mas grande o igual al elemento dado, o null si no existe el elemento;
-     * La ficha es comparada por columna o fila de acuerdo al jugador correspondiente
-     */
-    @Override
-    public PathagonToken ceiling(PathagonToken e){
-
-        return this.stream()
-                .filter(tk -> this.extensionComparator.compare(tk,e)>= 0)
-                .findFirst()
-                .orElse(null);
-    }
 
     /**
      * Construye el comparador de fichas para ordenar el conjunto, de acuerdo
@@ -125,13 +111,4 @@ public class PathagonPath extends TreeSet<PathagonToken> {
     }
 
 
-
-
-    public List<PathagonToken> pathHead(){
-        return new LinkedList<>(this.headSet(this.first(),true));
-    }
-
-    public List<PathagonToken> pathEnd(){
-        return new LinkedList<>(this.tailSet(this.last(),true));
-    }
 }

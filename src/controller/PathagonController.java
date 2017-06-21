@@ -84,6 +84,7 @@ public class PathagonController {
             problem.applyMove(this.currState, iaMove);
             view.updateView();
         }
+        this.turnNumber++;
     }
 
 
@@ -105,6 +106,7 @@ public class PathagonController {
         if (validPosition(row,col,currState.PLAYER1)) {
             problem.applyMove(this.currState, mv);
             view.updateView();
+            this.turnNumber++;
             return true;
         } else {
             return false;
@@ -130,8 +132,12 @@ public class PathagonController {
 
 
     public void changeDifficulty(int difficulty) {
-        this.ia = new MinMaxAlphaBetaEngine<>(this.problem,difficulty);
-    };
+        this.ia.setMaxDepth(difficulty);
+    }
+
+    public int getDifficulty(){ return this.ia.getMaxDepth();}
+
+
 
     public PathagonState getState(){
         return this.currState;
@@ -163,9 +169,10 @@ public class PathagonController {
     }
 
     //Cambia al siguiente turno
-    //Setea ulitmo movmiento a nulo
+    //Setea ulitmo movmiento y blockeados a nulo
     public void nextTurn() {
         this.currState.setLastMove(new PathagonToken(this.currState.getCurrentPlayer()));
+        this.currState.removeBlockedMoves();
         this.currState.changeTurn();
         view.updateView();
     }

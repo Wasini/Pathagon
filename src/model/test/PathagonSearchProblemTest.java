@@ -6,7 +6,6 @@ import model.PathagonSearchProblem.PathagonSearchProblem;
 import model.PathagonSearchProblem.PathagonState;
 import model.PathagonToken;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,20 +30,98 @@ class PathagonSearchProblemTest {
     }
 
 
+
     @Test
     void getSuccessors() {
     }
 
     @Test
     void end() {
+
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,0));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,0));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,1));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,1));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,2));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,2));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,3));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,3));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,4));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,4));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,5));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,5));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,6));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,6));
+        assertTrue(p.end(currState));
+
     }
 
+        @Test
+        void valueLongerPath() {
+        /*
+        o o o o o
+        x x x
+          x x
+
+       --o Player1 conecta columna
+       --x Player2 conecta fila
+         */
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,0));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,0));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,1));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,1));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,2));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,2));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,3));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,1));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,4));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,2));
+
+            assertTrue(p.value(currState)> 0,"Valor favorable para jugador 2");
+        }
+
+        @Test
+        void valueEatedToken() {
+        /*
+         x          x
+         o     =>
+                    x
+       --o Player1
+       --x Player2
+         */
+
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,0,0));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,1,0));
+            PathagonSearchProblem.applyMove(currState,new PathagonToken(1,2,0));
+
+            assertTrue(p.value(currState)> 0,"Valor favorable para jugador 2");
+        }
+
     @Test
-    void value() {
+    void valueEatedToken2() {
+        /*
+         o x    =>    o   o
+
+       --o Player1
+       --x Player2
+         */
+
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,0));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken( 1,0,1));
+        PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,2));
+
+        assertTrue(p.value(currState)< 0,"Valor favorable par ajugador 1");
     }
+
+
 
     @Test
     void generatePath1() {
+
+        /*
+        x x x x x : p1 conecta columna
+        o o o o o : p2 conecta fila
+         */
         PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,0));
         PathagonSearchProblem.applyMove(currState,new PathagonToken(1,1,0));
         PathagonSearchProblem.applyMove(currState,new PathagonToken(-1,0,1));
@@ -65,10 +142,12 @@ class PathagonSearchProblemTest {
     @Test
     void generatePath2() {
 
-        /*
+        /*  Conecta columna
         p1: x x
             x x
               x
+
+            Conecta fila
         p2:
             o o
             o o o
@@ -126,7 +205,7 @@ class PathagonSearchProblemTest {
         assertFalse(PathagonSearchProblem.validMove(currState,myMove),"movimiento invalido "+myMove.toString()+"/n Lugar bloqueado");
         currState.removeBlockedMoves();
 
-        IntStream.range(0,currState.playerTokensLeft(myMove.player)).forEach(nbr -> currState.addMove(new PathagonToken(-1,1,1)));
+        IntStream.range(0,currState.playerTokensLeft(myMove.player)).forEach(nbr -> currState.addToken(new PathagonToken(-1,1,1)));
         myMove.col = 1;
         myMove.row = 6;
         assertFalse(PathagonSearchProblem.validMove(currState,myMove),"movimiento invalido "+myMove.toString()+"/n Sin fichas disponibles");

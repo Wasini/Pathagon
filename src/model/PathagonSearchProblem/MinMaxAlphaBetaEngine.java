@@ -17,6 +17,9 @@ import java.util.List;
 
 public class MinMaxAlphaBetaEngine<P extends AdversarySearchProblem<S>, S extends AdversarySearchState> extends AdversarySearchEngine<P,S> {
 
+    private S best; // stores the best state choosed
+    private int bestValue; // stores the value of the best state choosen
+
 	public MinMaxAlphaBetaEngine(P p,int maxDepth) {
 		super(p,maxDepth);
 	}
@@ -60,7 +63,6 @@ public class MinMaxAlphaBetaEngine<P extends AdversarySearchProblem<S>, S extend
 	public S computeSuccessor(S state) throws IllegalArgumentException{
 		boolean max = state.isMax();
 		List<S> successors = problem.getSuccessors(state);
-		S best; int bestValue;
 		if(successors.size() == 0)
 			throw new IllegalArgumentException("Wrong game state input, there is not successors");
 		best = successors.remove(0);
@@ -82,8 +84,8 @@ public class MinMaxAlphaBetaEngine<P extends AdversarySearchProblem<S>, S extend
 
 	@Override
 	public void report() {
-		// TODO Auto-generated method stub
-		
+        System.out.println("Value of best state choosen "+bestValue);
+        System.out.println("Move to get to next best state "+best.ruleApplied().toString());
 	}
 
 }

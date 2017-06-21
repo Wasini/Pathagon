@@ -32,7 +32,7 @@ public class PathagonBoard {
     public PathagonBoard(PathagonBoard another) {
         this.board = new PathagonToken[ROWS][];
         for (int i = 0; i< ROWS;i++) {
-            PathagonToken[] aRow = another.getBoard()[i];
+            PathagonToken[] aRow = another.getBoard()[i].clone();
             this.board[i] = new PathagonToken[COLS];
             System.arraycopy(aRow, 0, this.board[i], 0, COLS);
         }

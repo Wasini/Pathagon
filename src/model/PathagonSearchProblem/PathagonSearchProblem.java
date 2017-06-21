@@ -5,10 +5,7 @@ import model.PathagonBoard;
 import model.PathagonPath;
 import model.PathagonToken;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,19 +14,25 @@ import java.util.stream.Collectors;
 public class PathagonSearchProblem<P> implements AdversarySearchProblem<PathagonState> {
 
     protected PathagonState initial;
-    private TreeSet<PathagonPath> p1Paths; //Caminos del jugador 1 ordenados por extension en forma decreciente
-    private TreeSet<PathagonPath> p2Paths; //Caminos del jugador 2 ordenados por extension en forma decreciente
+    private List<PathagonPath> p1Paths; //Caminos del jugador 1
+    private List<PathagonPath> p2Paths; //Caminos del jugador 2
+    private int p1LongestPath;
+    private int p2LongestPath;
 
     public PathagonSearchProblem(PathagonState initial) {
-        this.p1Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
-        this.p2Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
+        this.p1Paths = new LinkedList<PathagonPath>();
+        this.p2Paths = new LinkedList<PathagonPath>();
+        this.p1LongestPath = 0;
+        this.p2LongestPath = 0;
         this.initial = initial;
     }
 
     public PathagonSearchProblem() {
         this.initial = new PathagonState();
-        this.p1Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
-        this.p2Paths = new TreeSet<PathagonPath>((p1,p2) -> p2.extension() - p1.extension());
+        this.p1Paths = new LinkedList<PathagonPath>();
+        this.p2Paths = new LinkedList<PathagonPath>();
+        this.p1LongestPath = 0;
+        this.p2LongestPath = 0;
     }
 
     @Override
@@ -59,10 +62,14 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     public boolean end(PathagonState state) {
         if (state.getBoard().getTotalTokens() == 28)
             return true;
-        this.computePaths(state);
-        if (this.p1Paths.isEmpty() || this.p2Paths.isEmpty() )
-            return false;
-        return this.p1Paths.first().extension() == state.BOARDSIZE || this.p2Paths.first().extension() == state.BOARDSIZE;
+        Boolean p1Connects = state.getPlayerTokens(state.PLAYER1).stream()
+                .map(tk -> generatePath(state.getBoard(),tk))
+                .anyMatch(path -> path.extension() == state.BOARDSIZE);
+        Boolean p2Connects = state.getPlayerTokens(state.PLAYER2).stream()
+                .map(tk -> generatePath(state.getBoard(),tk))
+                .anyMatch(path -> path.extension() == state.BOARDSIZE);
+
+        return p1Connects || p2Connects;
     }
 
 
@@ -76,22 +83,18 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
     public int value(PathagonState state) {
 
         this.computePaths(state);
-        int p1Extension = p1Paths.isEmpty() ? 0 : p1Paths.first().extension();
-        int p2Extension = p2Paths.isEmpty() ? 0 : p2Paths.first().extension();
 
         int blockedPositionsValue = 0;
         if (state.hasBlockedMoves()) {
             blockedPositionsValue = state.getBlockedMoves().stream().mapToInt(tk -> tk.player).sum() * -1;
         }
 
-        if (p1Extension == state.BOARDSIZE)
+        if (this.p1LongestPath == state.BOARDSIZE)
             return minValue();
-        if (p2Extension == state.BOARDSIZE)
+        if (this.p2LongestPath == state.BOARDSIZE)
             return maxValue();
 
-        return (p1Extension * 6 - p2Extension * 6 + blockedPositionsValue*2);
-
-
+        return (p2LongestPath * 30 - p1LongestPath * 30 + blockedPositionsValue*140);
 
 
     }
@@ -153,15 +156,13 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
 
         List<PathagonToken> posibleEated = tokensEatedBy(st,mv);
         if(!posibleEated.isEmpty()) {
-            for (PathagonToken eated: posibleEated
-                 ) {
+            st.removeBlockedMoves();
+            for (PathagonToken eated : posibleEated
+                    ) {
                 st.eatToken(eated);
             }
-        } else {
-            st.removeBlockedMoves();
         }
-
-        st.addMove(mv);
+        st.addToken(mv);
         st.changeTurn();
 
         return true;
@@ -192,9 +193,16 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
 
     /**
      * Agrera los caminos armados por las fichas del player1 en p1Paths y las del jugador 2 en p2Paths
+     * actualiza el valor de los caminos mas largos para cada jugador
      * @param st Estado del juego
      */
     private void computePaths(PathagonState st) {
+
+        this.p1Paths.clear();
+        this.p2Paths.clear();
+        this.p1LongestPath = 0;
+        this.p2LongestPath = 0;
+
         List<PathagonToken> tokens = new LinkedList<>(st.getPlayerTokens(st.PLAYER1));
         tokens.addAll(st.getPlayerTokens(st.PLAYER2));
 
@@ -211,9 +219,10 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
 
             tokens.removeAll(currPath);
         }
+        this.p1LongestPath = p1Paths.isEmpty() ? 0 : p1Paths.stream().max((a,b) -> a.extension() - b.extension()).get().extension();
+        this.p2LongestPath = p2Paths.isEmpty() ? 0 : p2Paths.stream().max((a,b) -> a.extension() - b.extension()).get().extension();
+        return;
     }
-
-
     /**
      * Dada una ficha y un tablero se genera el camino que contiene todas las fichas
      * en las que se pueden conectar con @fistToken
@@ -238,11 +247,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
                     adjs.add(n);
                 }
             }
-            //board.getAdyacents(firstToken, adj -> firstToken.player == adj.player).stream()
-            //        .filter(tk -> !pathOfCurrent.contains(tk) && !adjs.contains(tk))
-            //        .collect(Collectors.toCollection(() -> adjs));
         }
-
         return pathOfCurrent;
     }
 

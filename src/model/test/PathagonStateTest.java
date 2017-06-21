@@ -21,12 +21,12 @@ class PathagonStateTest {
     void setUp() {
         st = new PathagonState();
         PathagonBoard board = st.getBoard();
-        st.addMove(new PathagonToken(st.PLAYER1,2,3));
-        st.addMove(new PathagonToken(st.PLAYER1,3,3));
-        st.addMove(new PathagonToken(st.PLAYER1,3,4));
-        st.addMove(new PathagonToken( st.PLAYER2,6,1));
-        st.addMove(new PathagonToken(st.PLAYER2,5,1));
-        st.addMove(new PathagonToken(st.PLAYER2,4,1));
+        st.addToken(new PathagonToken(st.PLAYER1,2,3));
+        st.addToken(new PathagonToken(st.PLAYER1,3,3));
+        st.addToken(new PathagonToken(st.PLAYER1,3,4));
+        st.addToken(new PathagonToken( st.PLAYER2,6,1));
+        st.addToken(new PathagonToken(st.PLAYER2,5,1));
+        st.addToken(new PathagonToken(st.PLAYER2,4,1));
 
     }
 
@@ -51,7 +51,7 @@ class PathagonStateTest {
         assertFalse(st.equals(other),"Board difers");
         st.getBoard().removeToken(2,2);
 
-        st.addMove(new PathagonToken(1,4,4));
+        st.addToken(new PathagonToken(1,4,4));
         assertFalse(st.equals(other),"Movements difers");
 
 
