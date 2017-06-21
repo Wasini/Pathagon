@@ -47,7 +47,6 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
         for (PathagonToken mv : moves) {
             PathagonState child = new PathagonState(state);
             applyMove(child,mv);
-            child.changeTurn();
             childs.add(child);
         }
         return childs;
@@ -145,27 +144,19 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
      * @param mv
      * @return
      */
-    public static boolean applyMove(PathagonState st, PathagonToken mv){
+    public static void applyMove(PathagonState st, PathagonToken mv){
 
-        if (mv.isNull()) {
-            st.removeBlockedMoves();
-            st.setLastMove(mv);
-            st.changeTurn();
-            return true;
-        }
-
-        List<PathagonToken> posibleEated = tokensEatedBy(st,mv);
-        if(!posibleEated.isEmpty()) {
-            st.removeBlockedMoves();
-            for (PathagonToken eated : posibleEated
-                    ) {
-                st.eatToken(eated);
+        if (!mv.isNull()) {
+            List<PathagonToken> posibleEated = tokensEatedBy(st,mv);
+            if(!posibleEated.isEmpty()) {
+                for (PathagonToken tk : posibleEated
+                        ) {
+                    st.eatToken(tk);
+                }
             }
         }
         st.addToken(mv);
         st.changeTurn();
-
-        return true;
     }
 
 
@@ -267,8 +258,7 @@ public class PathagonSearchProblem<P> implements AdversarySearchProblem<Pathagon
 
         List<PathagonToken> posibleEatable = st.getBoard().getAdyacents(trapMove,(tk -> tk.player != trapMove.player));
         eatables = posibleEatable.stream()
-                .filter(eatable -> playerAdyacentTokens.stream().
-                        anyMatch(myOtherTk -> eatable.isTrapedBy(trapMove,myOtherTk))).collect(Collectors.toList());
+                .filter(eatable -> playerAdyacentTokens.stream().anyMatch(myOtherTk -> eatable.isTrapedBy(trapMove,myOtherTk))).collect(Collectors.toList());
 
         return eatables;
     }

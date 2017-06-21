@@ -78,13 +78,9 @@ public class PathagonController {
             return;
         }
         PathagonToken iaMove = this.ia.computeSuccessor(this.currState).getLastMove();
-        if(iaMove.isNull()){
-            nextTurn();
-        } else{
-            problem.applyMove(this.currState, iaMove);
-            view.updateView();
-        }
+        problem.applyMove(this.currState, iaMove);
         this.turnNumber++;
+        view.updateView();
     }
 
 
@@ -168,11 +164,10 @@ public class PathagonController {
         return this.problem.end(currState);
     }
 
-    //Cambia al siguiente turno
-    //Setea ulitmo movmiento y blockeados a nulo
+    //Cambia al siguiente turno sin realizar movimientos
+    //Setea ulitmo movmiento nulo
     public void nextTurn() {
         this.currState.setLastMove(new PathagonToken(this.currState.getCurrentPlayer()));
-        this.currState.removeBlockedMoves();
         this.currState.changeTurn();
         view.updateView();
     }

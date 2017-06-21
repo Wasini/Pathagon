@@ -520,7 +520,7 @@ public class graphicBoardGame extends PathagonView{
     }//GEN-LAST:event_p6MouseClicked
 
     private void p7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p7MouseClicked
-        ModifyBotton(6,2);
+        ModifyBotton(   6,2);
     }//GEN-LAST:event_p7MouseClicked
 
     private void p8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p8MouseClicked

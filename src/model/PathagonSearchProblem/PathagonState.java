@@ -89,7 +89,7 @@ public class PathagonState implements AdversarySearchState {
     }
 
     public int getPlayerTokenAmount(int player) {
-        return player == PLAYER1 ? this.p1Tokens.size() : this.p1Tokens.size();
+        return player == PLAYER1 ? this.p1Tokens.size() : this.p2Tokens.size();
     }
 
     public List<PathagonToken> getPlayerTokens(int player) {
@@ -155,8 +155,19 @@ public class PathagonState implements AdversarySearchState {
     }
 
 
+    /**
+     * limpia las fichas bloqueadas para el jugador actual y
+     * cambia el turno del estado
+     */
+
     public void changeTurn(){
+        if (this.hasBlockedMoves()) {
+            int blockedPlayer = this.blockedMoves.get(0).player;
+            if (blockedPlayer == this.getCurrentPlayer())
+                this.removeBlockedMoves();
+        }
         this.turn *= -1;
+
     }
 
 
@@ -206,6 +217,7 @@ public class PathagonState implements AdversarySearchState {
      *
      */
     public void eatToken(PathagonToken tk) {
+        this.removeBlockedMoves();
         PathagonToken removedToken = this.board.removeToken(tk);
         if (removedToken != null) {
             blockedMoves.add(removedToken);
