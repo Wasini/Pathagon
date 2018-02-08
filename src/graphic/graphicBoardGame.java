@@ -912,9 +912,7 @@ public class graphicBoardGame extends PathagonView{
 
         int botlevel = gameControl.getDifficulty();
 
-        if(gameControl.getTurnNumber() == 8 && botlevel < 4) {
-            gameControl.changeDifficulty(gameControl.getDifficulty()+1);
-        }
+
 
         if(gameControl.getTurnNumber() == 16) {
             gameControl.changeDifficulty(gameControl.getDifficulty()+1);
